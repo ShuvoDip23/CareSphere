@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+venv/
+.venv/
+env/
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Secrets and local config
+.env
+.env.local
+*.pem
+
+# Databases - never commit. The old carelink.db contained real user emails
+# and password hashes.
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Node
+node_modules/
+
+# Uploads (prescription images etc.)
+backend/uploads/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="caresphere-api" content="http://127.0.0.1:5000" />
+    <meta
+      name="description"
+      content="CareSphere - find verified doctors in Rajshahi, understand your symptoms, and book appointments in one place."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Cpath d='M16 25s-8-5-8-11.4A4.6 4.6 0 0 1 16 10a4.6 4.6 0 0 1 8 3.6C24 20 16 25 16 25z' fill='%23fff'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/pages.css" />
+    <title>Sign in — CareSphere</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header id="siteHeader"></header>
+
+    <main id="main" class="auth-layout">
+      <div class="auth-main">
+        <div class="auth-card">
+          <h1>Welcome back</h1>
+          <p>Sign in to manage your appointments and assessments.</p>
+
+          <div class="alert" id="formAlert" role="alert"></div>
+
+          <form id="loginForm" novalidate>
+            <div class="field">
+              <label for="email">Email address</label>
+              <input
+                id="email"
+                type="email"
+                autocomplete="email"
+                required
+                placeholder="you@example.com"
+              />
+            </div>
+            <div class="field">
+              <label for="password">Password</label>
+              <input
+                id="password"
+                type="password"
+                autocomplete="current-password"
+                required
+                placeholder="Your password"
+              />
+            </div>
+            <button class="btn btn-primary btn-block btn-lg" type="submit" id="submitButton">
+              Sign in
+            </button>
+          </form>
+
+          <p class="auth-alt">New to CareSphere? <a href="register.html">Create an account</a></p>
+        </div>
+      </div>
+      <aside class="auth-aside">
+        <h2>Healthcare that starts with understanding.</h2>
+        <p>
+          One account connects your symptom assessments, appointments and medical history across the
+          whole platform.
+        </p>
+        <div class="auth-points">
+          <div class="auth-point">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3 5 6v5c0 4.4 2.8 8.4 7 10 4.2-1.6 7-5.6 7-10V6l-7-3Z" />
+              <path d="m9 12 2 2 4-4" />
+            </svg>
+            <div>
+              <strong>Verified profiles</strong>
+              <span>Every doctor is reviewed before appearing in the directory.</span>
+            </div>
+          </div>
+          <div class="auth-point">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 3v4M12 17v4M3 12h4M17 12h4" />
+              <path d="m6.3 6.3 2.4 2.4M15.3 15.3l2.4 2.4M17.7 6.3l-2.4 2.4M8.7 15.3l-2.4 2.4" />
+            </svg>
+            <div>
+              <strong>AI symptom guidance</strong>
+              <span>Describe how you feel and get pointed to the right specialty.</span>
+            </div>
+          </div>
+          <div class="auth-point">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M8 3v4M16 3v4M4 9h16" />
+              <rect x="4" y="5" width="16" height="16" rx="2" />
+            </svg>
+            <div>
+              <strong>Your history, kept together</strong>
+              <span>Appointments and assessments stay in one place.</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <script type="module" src="assets/js/pages/auth.js"></script>
+  </body>
+</html>

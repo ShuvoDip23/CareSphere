@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="caresphere-api" content="http://127.0.0.1:5000" />
+    <meta
+      name="description"
+      content="CareSphere - find verified doctors in Rajshahi, understand your symptoms, and book appointments in one place."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Cpath d='M16 25s-8-5-8-11.4A4.6 4.6 0 0 1 16 10a4.6 4.6 0 0 1 8 3.6C24 20 16 25 16 25z' fill='%23fff'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/pages.css" />
+    <title>Find doctors — CareSphere</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header id="siteHeader"></header>
+
+    <main id="main" class="container">
+      <div class="page-head">
+        <p class="eyebrow">Doctor directory</p>
+        <h1>Find the right specialist</h1>
+        <p class="lede" style="max-width: 56ch">
+          Search by name, hospital or area, then narrow the list by specialty.
+        </p>
+      </div>
+
+      <form class="filter-bar" role="search" onsubmit="return false;">
+        <div class="field" style="margin: 0">
+          <label class="visually-hidden" for="searchInput">Search doctors</label>
+          <span class="input-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <input
+              class="input"
+              id="searchInput"
+              type="search"
+              placeholder="Search by name, hospital or area"
+              autocomplete="off"
+            />
+          </span>
+        </div>
+
+        <div class="field" style="margin: 0">
+          <label class="visually-hidden" for="specialtyFilter">Specialty</label>
+          <select id="specialtyFilter">
+            <option value="">All specialties</option>
+          </select>
+        </div>
+
+        <div class="field" style="margin: 0">
+          <label class="visually-hidden" for="sortSelect">Sort by</label>
+          <select id="sortSelect">
+            <option value="rating">Highest rated</option>
+            <option value="experience">Most experienced</option>
+            <option value="fee_low">Fee: low to high</option>
+            <option value="fee_high">Fee: high to low</option>
+            <option value="name">Name (A–Z)</option>
+          </select>
+        </div>
+      </form>
+
+      <div class="chip-row" id="chipRow"></div>
+
+      <div class="results-line">
+        <span id="resultSummary" aria-live="polite">Loading…</span>
+      </div>
+
+      <div class="doctor-grid" id="doctorGrid"></div>
+      <div class="pagination" id="pagination"></div>
+    </main>
+
+    <footer id="siteFooter"></footer>
+    <script type="module" src="assets/js/pages/doctors.js"></script>
+  </body>
+</html>

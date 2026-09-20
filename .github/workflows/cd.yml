@@ -1,0 +1,81 @@
+name: CD
+
+# Deployment is MANUAL for now.
+#
+# Nothing is deployed yet, so this workflow only runs when you start it by hand
+# from the Actions tab (Actions > CD > Run workflow). That keeps the Actions tab
+# green instead of failing on every push to a project with no hosting yet.
+#
+# To switch it on automatically later, delete the `workflow_dispatch:` line
+# below and uncomment the `workflow_run:` block. Do that in the same pull
+# request that adds the hosting, so the history shows when deployment began.
+#
+# Before enabling, you need:
+#   1. A Render web service, with its deploy hook URL stored as a repository
+#      secret named RENDER_DEPLOY_HOOK
+#      (Settings > Secrets and variables > Actions > New repository secret)
+#   2. GitHub Pages enabled with "GitHub Actions" as the source
+#      (Settings > Pages > Build and deployment > Source)
+on:
+  workflow_dispatch:
+
+  # workflow_run:
+  #   workflows: [CI]
+  #   branches: [main]
+  #   types: [completed]
+
+# Never let two deploys of the same branch overlap.
+concurrency:
+  group: cd-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  deploy-backend:
+    name: Deploy backend (Render)
+    # Always true on a manual run; meaningful once the workflow_run trigger is on.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env:
+          HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$HOOK" ]; then
+            echo "::error::RENDER_DEPLOY_HOOK is not set. Add it under Settings > Secrets and variables > Actions before running CD."
+            exit 1
+          fi
+          curl -fsSL -X POST "$HOOK"
+          echo "Render deploy triggered."
+
+  deploy-frontend:
+    name: Deploy frontend (GitHub Pages)
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+
+      # The frontend reads its API origin from a meta tag, so the deployed copy
+      # must point at the deployed backend rather than 127.0.0.1.
+      - name: Point the frontend at the deployed API
+        if: vars.API_ORIGIN != ''
+        run: |
+          find frontend -name '*.html' -print0 | xargs -0 sed -i \
+            "s|content=\"http://127.0.0.1:5000\"|content=\"${{ vars.API_ORIGIN }}\"|g"
+          echo "API origin set to ${{ vars.API_ORIGIN }}"
+
+      - name: Upload the frontend folder
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: frontend
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

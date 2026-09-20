@@ -1,0 +1,18 @@
+# Every PR automatically requests a review from the lane owner.
+# Replace the placeholders with real GitHub usernames before the first PR.
+
+*                                      @shuvo-github-username
+
+/backend/app/blueprints/donors/        @mithun-github-username
+/backend/app/blueprints/ambulance/     @mithun-github-username
+/backend/app/models/donor.py           @mithun-github-username
+/backend/app/models/ambulance.py       @mithun-github-username
+
+/backend/app/blueprints/prescriptions/ @ifti-github-username
+/backend/app/blueprints/reminders/     @ifti-github-username
+/backend/app/models/prescription.py    @ifti-github-username
+/backend/app/models/reminder.py        @ifti-github-username
+
+/.github/                              @shuvo-github-username
+/backend/app/utils/security.py         @shuvo-github-username
+/backend/app/config.py                 @shuvo-github-username

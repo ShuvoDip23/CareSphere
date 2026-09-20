@@ -1,0 +1,10 @@
+# Normalise line endings. Without this, Windows and Linux checkouts produce
+# whole-file diffs - the old repo had 2,493 insertions and 2,493 deletions of
+# pure CRLF churn across nine files.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.pdf binary
+*.db  binary

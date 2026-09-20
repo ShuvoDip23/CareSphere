@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="caresphere-api" content="http://127.0.0.1:5000" />
+    <meta
+      name="description"
+      content="CareSphere - find verified doctors in Rajshahi, understand your symptoms, and book appointments in one place."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Cpath d='M16 25s-8-5-8-11.4A4.6 4.6 0 0 1 16 10a4.6 4.6 0 0 1 8 3.6C24 20 16 25 16 25z' fill='%23fff'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/pages.css" />
+    <title>CareSphere — Smart healthcare through AI</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header id="siteHeader"></header>
+
+    <main id="main">
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <p class="eyebrow">CSE 3200 · RUET</p>
+            <h1>The right specialist, without the guesswork.</h1>
+            <p class="lede">
+              CareSphere brings doctor discovery, AI-assisted symptom guidance, appointment booking
+              and emergency support into one connected platform — so you spend less time working out
+              where to go.
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="doctors.html">Find a doctor</a>
+              <a class="btn btn-secondary btn-lg" href="register.html">Create an account</a>
+            </div>
+            <div class="hero-trust">
+              <div><strong>6</strong><span>Specialties</span></div>
+              <div><strong>12</strong><span>Verified profiles</span></div>
+              <div><strong>Rajshahi</strong><span>Coverage area</span></div>
+            </div>
+          </div>
+
+          <div class="hero-panel" aria-hidden="true">
+            <div class="hero-panel-head">
+              <strong style="font-size: var(--text-sm)">Cardiologists near you</strong>
+              <span class="badge badge-ok">Available</span>
+            </div>
+            <div class="mini-doctor">
+              <span class="avatar">AH</span>
+              <div><strong>Dr. Anwar Hossain</strong><span>Padma Heart Centre</span></div>
+              <span class="fee">৳1,500</span>
+            </div>
+            <div class="mini-doctor">
+              <span class="avatar">NJ</span>
+              <div><strong>Dr. Nusrat Jahan</strong><span>Barind Specialised Clinic</span></div>
+              <span class="fee">৳1,200</span>
+            </div>
+            <div class="mini-doctor">
+              <span class="avatar">KH</span>
+              <div><strong>Prof. Dr. Kamrul Hasan</strong><span>Padma General Hospital</span></div>
+              <span class="fee">৳1,800</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <p class="eyebrow">Browse by specialty</p>
+          <h2>Start with what you are feeling</h2>
+          <p class="lede" style="max-width: 52ch; margin-bottom: var(--space-8)">
+            Every profile lists qualifications, hospital, consulting hours and fee up front, so you
+            can compare before you commit.
+          </p>
+          <div class="specialty-grid" id="specialtyGrid">
+            <div class="specialty-tile">
+              <div class="skeleton skeleton-line" style="width: 70%"></div>
+            </div>
+            <div class="specialty-tile">
+              <div class="skeleton skeleton-line" style="width: 60%"></div>
+            </div>
+            <div class="specialty-tile">
+              <div class="skeleton skeleton-line" style="width: 75%"></div>
+            </div>
+            <div class="specialty-tile">
+              <div class="skeleton skeleton-line" style="width: 55%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section
+        class="section"
+        style="background: var(--surface); border-block: 1px solid var(--border)"
+      >
+        <div class="container">
+          <p class="eyebrow">How it works</p>
+          <h2 style="margin-bottom: var(--space-10)">Four steps from concern to care</h2>
+          <div class="steps">
+            <div class="step">
+              <h3>Describe your symptoms</h3>
+              <p>
+                Write naturally. The AI assistant asks follow-up questions and estimates urgency.
+              </p>
+            </div>
+            <div class="step">
+              <h3>Get a specialty suggestion</h3>
+              <p>You are pointed to the kind of doctor who handles what you described.</p>
+            </div>
+            <div class="step">
+              <h3>Compare and choose</h3>
+              <p>Filter by specialty, experience and fee, then read the full profile.</p>
+            </div>
+            <div class="step">
+              <h3>Book and pay</h3>
+              <p>Reserve a slot and pay online. Your history stays in your account.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer id="siteFooter"></footer>
+    <script type="module" src="assets/js/pages/home.js"></script>
+  </body>
+</html>

@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="caresphere-api" content="http://127.0.0.1:5000" />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Cpath d='M16 25s-8-5-8-11.4A4.6 4.6 0 0 1 16 10a4.6 4.6 0 0 1 8 3.6C24 20 16 25 16 25z' fill='%23fff'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/pages.css" />
+    <title>Admin console — CareSphere</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header id="siteHeader"></header>
+
+    <main id="main" class="container" style="padding-block: var(--space-8)">
+      <div id="adminRoot">
+        <div class="page-head">
+          <p class="eyebrow">Admin console</p>
+          <h1>Doctor directory</h1>
+          <p class="lede" style="max-width: 56ch">
+            Add, edit and remove doctor profiles. Only approved profiles appear in the public
+            directory.
+          </p>
+        </div>
+
+        <div class="stat-row" id="statRow"></div>
+
+        <div class="toolbar">
+          <span class="input-icon grow">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              stroke-linecap="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m20 20-3.5-3.5" />
+            </svg>
+            <label class="visually-hidden" for="adminSearch">Search doctors</label>
+            <input
+              class="input"
+              id="adminSearch"
+              type="search"
+              placeholder="Search name, hospital or specialty"
+              autocomplete="off"
+            />
+          </span>
+
+          <label class="visually-hidden" for="statusFilter">Filter by status</label>
+          <select id="statusFilter" style="max-width: 12rem">
+            <option value="">All statuses</option>
+            <option value="approved">Approved</option>
+            <option value="pending">Pending</option>
+            <option value="rejected">Rejected</option>
+          </select>
+
+          <button class="btn btn-primary" type="button" id="addButton">Add doctor</button>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data">
+            <thead>
+              <tr>
+                <th scope="col">Doctor</th>
+                <th scope="col">Hospital</th>
+                <th scope="col">Consulting</th>
+                <th scope="col">Fee</th>
+                <th scope="col">Status</th>
+                <th scope="col"><span class="visually-hidden">Actions</span></th>
+              </tr>
+            </thead>
+            <tbody id="doctorRows"></tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <div class="modal-backdrop" id="doctorModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-head">
+          <h2 id="modalTitle">Add a doctor</h2>
+          <button class="icon-btn" type="button" id="closeModal" aria-label="Close">&times;</button>
+        </div>
+
+        <form id="doctorForm" novalidate>
+          <div class="modal-body">
+            <div class="alert" id="formAlert" role="alert"></div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="fName">Full name</label>
+                <input id="fName" required placeholder="Dr. Anwar Hossain" />
+              </div>
+              <div class="field">
+                <label for="fSpecialty">Specialty</label>
+                <input
+                  id="fSpecialty"
+                  required
+                  list="specialtyOptions"
+                  placeholder="Cardiologist"
+                />
+                <datalist id="specialtyOptions">
+                  <option value="Cardiologist"></option>
+                  <option value="Dermatologist"></option>
+                  <option value="ENT Specialist"></option>
+                  <option value="Neurologist"></option>
+                  <option value="Orthopedic"></option>
+                  <option value="General Physician"></option>
+                </datalist>
+                <span class="field-hint">A new specialty is created automatically.</span>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="fHospital">Hospital or clinic</label>
+                <input id="fHospital" required placeholder="Padma Heart Centre" />
+              </div>
+              <div class="field">
+                <label for="fLocation">Area</label>
+                <input id="fLocation" required placeholder="Laxmipur, Rajshahi" />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="fPhone">Phone</label>
+                <input id="fPhone" required placeholder="+8801700000000" />
+              </div>
+              <div class="field">
+                <label for="fFee">Consultation fee (৳)</label>
+                <input id="fFee" type="number" min="0" step="any" required placeholder="1500" />
+              </div>
+              <div class="field">
+                <label for="fExperience">Years of experience</label>
+                <input id="fExperience" type="number" min="0" max="70" value="0" />
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="fQualification">Qualifications</label>
+              <input id="fQualification" placeholder="MBBS, FCPS (Medicine)" />
+            </div>
+
+            <div class="field">
+              <label for="fBio">Short description</label>
+              <textarea id="fBio" rows="3" placeholder="Optional profile summary"></textarea>
+            </div>
+
+            <div class="field">
+              <label for="fStatus">Visibility</label>
+              <select id="fStatus">
+                <option value="approved">Approved — visible in the directory</option>
+                <option value="pending">Pending — hidden until approved</option>
+                <option value="rejected">Rejected — hidden</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label>Weekly consulting hours</label>
+              <div class="availability-editor" id="availabilityEditor"></div>
+            </div>
+          </div>
+
+          <div class="modal-foot">
+            <button class="btn btn-secondary" type="button" id="cancelModal">Cancel</button>
+            <button class="btn btn-primary" type="submit" id="saveButton">Save doctor</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="assets/js/pages/admin.js"></script>
+  </body>
+</html>
