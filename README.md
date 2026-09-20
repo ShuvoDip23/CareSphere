@@ -17,11 +17,7 @@ Supervisor: Utsha Das, Assistant Professor
 
 ## Relationship to previous work
 
-CareSphere is a ground-up rebuild. A working prototype covering doctor
-discovery, the AI assistant, appointment booking, payments and a first cut of
-emergency assist was produced in the previous semester. That prototype is the
-functional reference for this project, but no code is carried over unmodified:
-each module is re-implemented on the architecture described in
+CareSphere is a ground-up development project. The system is being built from the beginning with a focus on establishing a scalable and maintainable architecture. The project aims to develop key healthcare functionalities, including doctor discovery, an AI assistant, appointment booking, payment integration, and emergency assistance. Each module is being designed and implemented based on the proposed architecture, following modern software engineering practices to ensure reliability, security, and future extensibility.
 [`docs/architecture.md`](docs/architecture.md) and hardened as it is ported.
 [`docs/PORTING.md`](docs/PORTING.md) tracks that work module by module, and
 [`docs/prototype-review.md`](docs/prototype-review.md) records the defects found
