@@ -111,14 +111,6 @@ export async function renderChrome() {
               confidence, and keep your health information in one place.
             </p>
           </div>
-          <div>
-            <strong style="color:var(--text)">Project</strong>
-            <ul class="plain" style="margin-top:var(--space-2);display:grid;gap:var(--space-1)">
-              <li>CSE 3200 &mdash; Software Development Project II</li>
-              <li>Department of Computer Science &amp; Engineering</li>
-              <li>Rajshahi University of Engineering &amp; Technology</li>
-            </ul>
-          </div>
         </div>
         <p class="footer-note">
           CareSphere does not provide medical diagnosis. In an emergency, contact
