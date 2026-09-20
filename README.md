@@ -1,5 +1,7 @@
 # CareSphere
 
+[![CI](https://github.com/ShuvoDip23/CareSphere/actions/workflows/ci.yml/badge.svg)](https://github.com/ShuvoDip23/CareSphere/actions/workflows/ci.yml)
+
 Smart healthcare through AI. An integrated healthcare coordination platform:
 doctor discovery, a two-stage AI health assistant, appointment booking with
 online payment, emergency assistance, prescription OCR, medication reminders,
