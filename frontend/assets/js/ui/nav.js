@@ -7,6 +7,7 @@ import { icon } from "../icons.js";
 const LINKS = [
   { href: "index.html", label: "Home" },
   { href: "doctors.html", label: "Find doctors" },
+  { href: "ocr.html", label: "Prescription OCR" },
   { href: "admin.html", label: "Admin", roles: ["admin"] },
 ];
 
