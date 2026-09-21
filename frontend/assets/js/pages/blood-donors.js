@@ -1,7 +1,7 @@
 import { escapeHtml } from "../api.js";
 import { icon } from "../icons.js";
 import { renderChrome } from "../ui/nav.js";
-import { showToast } from "../ui/toast.js";
+import { toast as showToast } from "../ui/toast.js";
 
 const BLOOD_COMPATIBILITY = {
   "O-": {
