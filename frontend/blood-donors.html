@@ -1,0 +1,581 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="caresphere-api" content="http://127.0.0.1:5000" />
+    <meta
+      name="description"
+      content="CareSphere - voluntary blood donor directory and compatibility guide in Rajshahi with privacy-preserving contact requests."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230d9488'/%3E%3Cpath d='M16 25s-8-5-8-11.4A4.6 4.6 0 0 1 16 10a4.6 4.6 0 0 1 8 3.6C24 20 16 25 16 25z' fill='%23fff'/%3E%3C/svg%3E"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="assets/css/tokens.css" />
+    <link rel="stylesheet" href="assets/css/base.css" />
+    <link rel="stylesheet" href="assets/css/components.css" />
+    <link rel="stylesheet" href="assets/css/pages.css" />
+    <title>Blood Donors — CareSphere</title>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <header id="siteHeader"></header>
+
+    <main id="main" class="container">
+      <div class="page-head">
+        <span class="blood-hero-badge">
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.75"
+            width="14"
+            height="14"
+            aria-hidden="true"
+          >
+            <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+          </svg>
+          Community Services · Rajshahi
+        </span>
+        <h1>Voluntary Blood Donors</h1>
+        <p class="lede" style="max-width: 60ch">
+          Connect with voluntary blood donors across Rajshahi. Donor identities and contact numbers
+          are protected — requests are sent securely through our privacy-preserving dispatch system.
+        </p>
+        <div class="hero-actions" style="margin-top: var(--space-4)">
+          <a class="btn btn-primary" href="#donorsSection">Find Blood Donors</a>
+          <a class="btn btn-secondary" href="#compatSection">Compatibility Chart</a>
+          <a class="btn btn-ghost" href="#registerSection">Register as a Donor</a>
+        </div>
+      </div>
+
+      <!-- Compatibility Guide Section -->
+      <section id="compatSection" class="compat-card" aria-labelledby="compatHeading">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            margin-bottom: var(--space-3);
+          "
+        >
+          <div>
+            <p class="eyebrow" style="margin-bottom: var(--space-1)">Clinical Reference</p>
+            <h2 id="compatHeading" style="margin: 0; font-size: var(--text-xl)">
+              Blood Type Compatibility
+            </h2>
+          </div>
+          <span class="badge badge-accent">Quick Guide</span>
+        </div>
+        <p
+          style="
+            color: var(--text-soft);
+            font-size: var(--text-sm);
+            max-width: 64ch;
+            margin-bottom: var(--space-4);
+          "
+        >
+          Knowing which blood types are compatible is critical during emergency transfusions. Match
+          patient requirements with compatible donor groups below:
+        </p>
+
+        <div class="compat-hero-grid">
+          <div class="compat-highlight-box">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" />
+            </svg>
+            <div>
+              <strong style="display: block; font-size: var(--text-sm)"
+                >Universal Red Cell Donor</strong
+              >
+              <span class="blood-type-pill" style="margin-top: var(--space-1)">O-</span>
+              <p
+                style="
+                  margin: var(--space-1) 0 0;
+                  font-size: var(--text-xs);
+                  color: var(--text-soft);
+                "
+              >
+                Can give red blood cells to any of the 8 blood types.
+              </p>
+            </div>
+          </div>
+
+          <div class="compat-highlight-box">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <path
+                d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"
+              />
+            </svg>
+            <div>
+              <strong style="display: block; font-size: var(--text-sm)">Universal Recipient</strong>
+              <span class="blood-type-pill" style="margin-top: var(--space-1)">AB+</span>
+              <p
+                style="
+                  margin: var(--space-1) 0 0;
+                  font-size: var(--text-xs);
+                  color: var(--text-soft);
+                "
+              >
+                Can safely receive red blood cells from any blood type.
+              </p>
+            </div>
+          </div>
+
+          <div class="compat-highlight-box">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <circle cx="12" cy="12" r="9" />
+              <path d="M12 7v5l3 2" />
+            </svg>
+            <div>
+              <strong style="display: block; font-size: var(--text-sm)">Donation Interval</strong>
+              <span class="badge badge-ok" style="margin-top: var(--space-1)">90 Days</span>
+              <p
+                style="
+                  margin: var(--space-1) 0 0;
+                  font-size: var(--text-xs);
+                  color: var(--text-soft);
+                "
+              >
+                Minimum rest period required between whole blood donations.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="compat-table-wrap">
+          <table class="compat-table">
+            <thead>
+              <tr>
+                <th>Blood Type</th>
+                <th>Can Donate To (Give)</th>
+                <th>Can Receive From (Receive)</th>
+                <th>Summary Note</th>
+              </tr>
+            </thead>
+            <tbody id="compatTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Donor Directory Search Section -->
+      <section id="donorsSection" style="margin-top: var(--space-10)">
+        <div
+          style="
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-3);
+            margin-bottom: var(--space-5);
+          "
+        >
+          <div>
+            <p class="eyebrow">Rajshahi Directory</p>
+            <h2 style="margin: 0">Search Voluntary Donors</h2>
+          </div>
+          <span style="font-size: var(--text-xs); color: var(--text-soft)"
+            >🔒 Privacy Protected · Request/Approve Only</span
+          >
+        </div>
+
+        <form class="filter-bar" role="search" onsubmit="return false;">
+          <div class="field" style="margin: 0">
+            <label class="visually-hidden" for="donorSearchInput">Search donors</label>
+            <span class="input-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                stroke-linecap="round"
+                aria-hidden="true"
+              >
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <input
+                class="input"
+                id="donorSearchInput"
+                type="search"
+                placeholder="Search by area (e.g. Kazla, Laxmipur, Talaimari) or ID"
+                autocomplete="off"
+              />
+            </span>
+          </div>
+
+          <div class="field" style="margin: 0">
+            <label class="visually-hidden" for="bloodGroupFilter">Blood Group</label>
+            <select id="bloodGroupFilter">
+              <option value="">All blood groups</option>
+              <option value="A+">A Positive (A+)</option>
+              <option value="A-">A Negative (A-)</option>
+              <option value="B+">B Positive (B+)</option>
+              <option value="B-">B Negative (B-)</option>
+              <option value="AB+">AB Positive (AB+)</option>
+              <option value="AB-">AB Negative (AB-)</option>
+              <option value="O+">O Positive (O+)</option>
+              <option value="O-">O Negative (O-)</option>
+            </select>
+          </div>
+
+          <div class="field" style="margin: 0">
+            <label class="visually-hidden" for="statusFilter">Availability</label>
+            <select id="statusFilter">
+              <option value="">All availability</option>
+              <option value="available">Available Now</option>
+              <option value="eligible_soon">Eligible Soon</option>
+            </select>
+          </div>
+        </form>
+
+        <div class="chip-row" id="bloodChipRow"></div>
+
+        <div class="results-line">
+          <span id="resultSummary" aria-live="polite">Loading donors…</span>
+        </div>
+
+        <div class="donor-grid" id="donorGrid"></div>
+      </section>
+
+      <!-- Donor Registration Section -->
+      <section id="registerSection" class="reg-card">
+        <div
+          style="
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: var(--space-4);
+            margin-bottom: var(--space-6);
+          "
+        >
+          <div>
+            <span class="blood-hero-badge">Save Lives in Rajshahi</span>
+            <h2 style="margin: var(--space-1) 0 var(--space-2)">
+              Register as a Voluntary Blood Donor
+            </h2>
+            <p
+              style="color: var(--text-soft); font-size: var(--text-sm); max-width: 58ch; margin: 0"
+            >
+              Join our network of voluntary blood donors. Your identity and phone number are never
+              exposed to the public. You retain full control over when to accept urgent requests.
+            </p>
+          </div>
+          <div class="privacy-notice-box" style="padding: var(--space-3) var(--space-4)">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              aria-hidden="true"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <span
+              ><strong>Privacy Guarantee:</strong> Requesters cannot see your phone number
+              directly.</span
+            >
+          </div>
+        </div>
+
+        <form id="donorRegForm" onsubmit="return false;">
+          <div
+            style="
+              display: grid;
+              gap: var(--space-4);
+              grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+            "
+          >
+            <div class="field">
+              <label for="regName">Full Name</label>
+              <input
+                id="regName"
+                class="input"
+                type="text"
+                placeholder="e.g. Istiak Ahmed"
+                required
+              />
+              <span class="field-hint">Used for internal verification only</span>
+            </div>
+
+            <div class="field">
+              <label for="regBloodGroup">Blood Group</label>
+              <select id="regBloodGroup" class="input" required>
+                <option value="">Select blood group</option>
+                <option value="A+">A Positive (A+)</option>
+                <option value="A-">A Negative (A-)</option>
+                <option value="B+">B Positive (B+)</option>
+                <option value="B-">B Negative (B-)</option>
+                <option value="AB+">AB Positive (AB+)</option>
+                <option value="AB-">AB Negative (AB-)</option>
+                <option value="O+">O Positive (O+)</option>
+                <option value="O-">O Negative (O-)</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="regArea">Area in Rajshahi</label>
+              <select id="regArea" class="input" required>
+                <option value="">Select area</option>
+                <option value="Kazla, Rajshahi">Kazla (RUET area)</option>
+                <option value="Talaimari, Rajshahi">Talaimari</option>
+                <option value="Laxmipur, Rajshahi">Laxmipur (RMCH area)</option>
+                <option value="Upashahar, Rajshahi">Upashahar</option>
+                <option value="Binodpur, Rajshahi">Binodpur (RU area)</option>
+                <option value="Shaheb Bazar, Rajshahi">Shaheb Bazar</option>
+                <option value="Vodra, Rajshahi">Vodra</option>
+                <option value="Court, Rajshahi">Court / Rajpara</option>
+              </select>
+            </div>
+
+            <div class="field">
+              <label for="regLastDate">Last Donation Date</label>
+              <input id="regLastDate" class="input" type="date" />
+              <span class="field-hint">Leave blank if you have never donated</span>
+            </div>
+
+            <div class="field">
+              <label for="regPhone">Contact Phone (Confidential)</label>
+              <input id="regPhone" class="input" type="tel" placeholder="+8801700000000" required />
+              <span class="field-hint">Kept strictly private</span>
+            </div>
+
+            <div class="field">
+              <label for="regHospitalNear">Nearby Landmark or Hospital</label>
+              <input
+                id="regHospitalNear"
+                class="input"
+                type="text"
+                placeholder="e.g. Near RUET Gate"
+              />
+            </div>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: var(--space-3);
+              margin-top: var(--space-4);
+              margin-bottom: var(--space-6);
+            "
+          >
+            <input type="checkbox" id="regAvailable" checked />
+            <label
+              for="regAvailable"
+              style="font-size: var(--text-sm); font-weight: 500; cursor: pointer"
+            >
+              I am currently eligible and willing to receive urgent blood contact requests.
+            </label>
+          </div>
+
+          <div style="display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap">
+            <button class="btn btn-primary btn-lg" type="submit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <path d="m20 6-11 11-5-5" />
+              </svg>
+              Register as Donor
+            </button>
+            <span style="font-size: var(--text-xs); color: var(--text-soft)"
+              >Registration is non-binding and free of charge.</span
+            >
+          </div>
+        </form>
+      </section>
+    </main>
+
+    <!-- Request Contact Modal Dialog -->
+    <div class="modal-backdrop" id="requestModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div
+          class="modal-head"
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: var(--space-5) var(--space-6);
+            border-bottom: 1px solid var(--border);
+          "
+        >
+          <div>
+            <h2 id="modalTitle" style="margin: 0; font-size: var(--text-lg)">
+              Request Contact with Donor
+            </h2>
+            <span
+              id="modalDonorId"
+              style="font-size: var(--text-xs); color: var(--accent); font-weight: 650"
+            ></span>
+          </div>
+          <button
+            class="btn btn-ghost btn-sm"
+            id="modalCloseBtn"
+            type="button"
+            aria-label="Close dialog"
+            style="padding: var(--space-2)"
+          >
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              width="18"
+              height="18"
+              aria-hidden="true"
+            >
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <form id="requestForm" style="padding: var(--space-6)">
+          <div class="notice" style="margin-bottom: var(--space-5)">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.75"
+              width="18"
+              height="18"
+              aria-hidden="true"
+            >
+              <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+              <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+            </svg>
+            <div>
+              <strong>Privacy Protection Active</strong>
+              <p style="margin: var(--space-1) 0 0; font-size: var(--text-xs)">
+                The donor's personal phone number is not displayed here. CareSphere will dispatch an
+                urgent request notification with the details below directly to the donor.
+              </p>
+            </div>
+          </div>
+
+          <div style="display: grid; gap: var(--space-4); grid-template-columns: 1fr 1fr">
+            <div class="field">
+              <label for="reqPatientName">Patient Name</label>
+              <input
+                class="input"
+                id="reqPatientName"
+                type="text"
+                placeholder="e.g. Md. Hasan"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="reqHospital">Hospital / Location in Rajshahi</label>
+              <input
+                class="input"
+                id="reqHospital"
+                type="text"
+                placeholder="e.g. RMCH Ward 12"
+                required
+              />
+            </div>
+
+            <div class="field">
+              <label for="reqUnits">Units Needed</label>
+              <input class="input" id="reqUnits" type="number" min="1" max="5" value="1" required />
+            </div>
+
+            <div class="field">
+              <label for="reqUrgency">Urgency Level</label>
+              <select class="input" id="reqUrgency">
+                <option value="emergency">🚨 Emergency (Within 2-4 hours)</option>
+                <option value="urgent">⚡ Urgent (Today)</option>
+                <option value="routine">📅 Planned (Within 24-48 hours)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top: var(--space-2)">
+            <label for="reqPhone">Attendant / Requester Contact Phone</label>
+            <input class="input" id="reqPhone" type="tel" placeholder="+88017xxxxxxxx" required />
+            <span class="field-hint"
+              >The donor will receive this number to contact you upon accepting.</span
+            >
+          </div>
+
+          <div class="field">
+            <label for="reqNotes">Additional Notes (Optional)</label>
+            <textarea
+              class="input"
+              id="reqNotes"
+              rows="2"
+              placeholder="e.g. Blood is needed for emergency surgery."
+            ></textarea>
+          </div>
+
+          <div
+            style="
+              display: flex;
+              justify-content: flex-end;
+              gap: var(--space-3);
+              margin-top: var(--space-6);
+              padding-top: var(--space-4);
+              border-top: 1px solid var(--border);
+            "
+          >
+            <button class="btn btn-secondary" id="modalCancelBtn" type="button">Cancel</button>
+            <button class="btn btn-primary" type="submit">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.75"
+                width="16"
+                height="16"
+                aria-hidden="true"
+              >
+                <path
+                  d="M21 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 1.1 4.2 2 2 0 0 1 3.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.4 2.1L7.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2Z"
+                />
+              </svg>
+              Send Secure Request
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <footer id="siteFooter"></footer>
+    <script type="module" src="assets/js/pages/blood-donors.js"></script>
+  </body>
+</html>

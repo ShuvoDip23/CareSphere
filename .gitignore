@@ -32,3 +32,6 @@ backend/uploads/
 .idea/
 .DS_Store
 Thumbs.db
+
+#
+runCommand.txt
