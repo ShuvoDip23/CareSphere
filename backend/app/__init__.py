@@ -56,16 +56,17 @@ def _register_blueprints(app: Flask) -> None:
     from .blueprints.admin import admin_bp
     from .blueprints.auth import auth_bp
     from .blueprints.doctors import doctors_bp
+    from .blueprints.donors import donors_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(doctors_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(donors_bp)
 
     # Week 3 - Shuvo  from .blueprints.appointments import appointments_bp
     # Week 4 - Shuvo  from .blueprints.payments import payments_bp
     # Week 5 - Shuvo  from .blueprints.chat import chat_bp
-    # Week 6 - Shuvo  from .blueprints.emergency import emergency_bp
-    # Week 4 - Ifti   from .blueprints.donors import donors_bp
+    # Week 6 - Shuvo  from .emergency import emergency_bp
     # Week 6 - Ifti   from .blueprints.ambulance import ambulance_bp
     # Week 5 - Jit    from .blueprints.prescriptions import prescriptions_bp
     # Week 7 - Jit    from .blueprints.reminders import reminders_bp

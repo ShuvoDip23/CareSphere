@@ -27,8 +27,8 @@ Status values: `not started` · `in progress` · `in review` · `done`
 
 | # | Module | Proposal § | Week | Status | Notes |
 | --- | --- | --- | --- | --- | --- |
-| 10 | Blood donor model + search | 4.9 | 3–4 | not started | Search by group, location, availability; last donation date |
-| 11 | Donor contact-request flow | 4.9 | 5 | not started | Donor phone numbers are never returned directly — request/approve only |
+| 10 | Blood donor model + search | 4.9 | 3–4 | done | Search by group, location, availability; last donation date |
+| 11 | Donor contact-request flow | 4.9 | 5 | done | Donor phone numbers are never returned directly — request/approve only |
 | 12 | Service-provider accounts | 4.1 | 5 | not started | `User.ROLE_PROVIDER` already exists; blood banks and ambulance operators use it |
 | 13 | Ambulance directory | 4.10 | 6 | not started | Same shape as the donor directory — reuse the search service |
 | 14 | Attendant accommodation | 1, 8 | 8 | not started | Listed in the proposal narrative but missing from §4 — add a §4.11 |

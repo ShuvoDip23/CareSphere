@@ -15,7 +15,7 @@ def register_cli(app: Flask) -> None:
         created = seed_demo_data()
         click.echo(
             "Seeded {specialties} specialties, {doctors} doctors, "
-            "{windows} availability windows.".format(**created)
+            "{windows} availability windows, {donors} blood donors.".format(**created)
         )
 
     @app.cli.command("create-admin")
