@@ -212,7 +212,9 @@ def register_donor():
     try:
         cleaned = validate_donor_registration(payload)
     except ValidationError as err:
-        return jsonify({"error": "Please correct the highlighted fields", "fields": err.errors}), 400
+        return jsonify(
+            {"error": "Please correct the highlighted fields", "fields": err.errors}
+        ), 400
 
     donor = BloodDonor(
         name=cleaned["name"],
@@ -253,7 +255,9 @@ def request_donor_contact(donor_id: int):
     try:
         cleaned = validate_donor_request(payload)
     except ValidationError as err:
-        return jsonify({"error": "Please correct the highlighted fields", "fields": err.errors}), 400
+        return jsonify(
+            {"error": "Please correct the highlighted fields", "fields": err.errors}
+        ), 400
 
     contact_request = DonorRequest(
         donor_id=donor.id,

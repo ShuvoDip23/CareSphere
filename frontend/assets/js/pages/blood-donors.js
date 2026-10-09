@@ -267,7 +267,10 @@ function setupModal() {
       );
       form.reset();
     } catch (err) {
-      showToast(err.message || "Failed to dispatch request. Please check required fields.", "error");
+      showToast(
+        err.message || "Failed to dispatch request. Please check required fields.",
+        "error"
+      );
     } finally {
       if (submitBtn) {
         submitBtn.disabled = false;

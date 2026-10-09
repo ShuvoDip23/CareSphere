@@ -114,9 +114,7 @@ class DonorRequest(db.Model):
     __tablename__ = "donor_requests"
 
     id = db.Column(db.Integer, primary_key=True)
-    donor_id = db.Column(
-        db.Integer, db.ForeignKey("blood_donors.id"), nullable=False, index=True
-    )
+    donor_id = db.Column(db.Integer, db.ForeignKey("blood_donors.id"), nullable=False, index=True)
     patient_name = db.Column(db.String(100), nullable=False)
     hospital = db.Column(db.String(200), nullable=False)
     units = db.Column(db.Integer, default=1, nullable=False)
