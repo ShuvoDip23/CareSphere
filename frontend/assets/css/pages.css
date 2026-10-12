@@ -7,7 +7,12 @@
   overflow: hidden;
   padding-block: var(--space-20) var(--space-16);
   background:
-    radial-gradient(60rem 30rem at 78% -10%, var(--accent-soft), transparent 60%), var(--page);
+    radial-gradient(
+      60rem 30rem at 78% -10%,
+      var(--accent-soft),
+      transparent 60%
+    ),
+    var(--page);
   border-bottom: 1px solid var(--border);
 }
 
@@ -529,7 +534,11 @@
 .auth-aside {
   padding: var(--space-16) var(--space-12);
   background:
-    radial-gradient(40rem 24rem at 20% 0%, rgb(255 255 255 / 0.12), transparent 60%),
+    radial-gradient(
+      40rem 24rem at 20% 0%,
+      rgb(255 255 255 / 0.12),
+      transparent 60%
+    ),
     linear-gradient(160deg, var(--brand-700), var(--brand-800));
   color: #fff;
   display: flex;
@@ -1136,4 +1145,359 @@
   .feature-banner .btn {
     width: 100%;
   }
+}
+
+/* ========================= AI health assistant ====================== */
+
+.assistant-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 17rem) minmax(0, 1fr);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+@media (max-width: 920px) {
+  .assistant-layout {
+    grid-template-columns: 1fr;
+  }
+  .assistant-history {
+    order: 2;
+  }
+}
+
+/* ---- History rail ---- */
+
+.assistant-history {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-4));
+  display: grid;
+  gap: var(--space-3);
+}
+
+.history-list {
+  display: grid;
+  gap: var(--space-2);
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.history-item {
+  display: grid;
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-3);
+  text-align: start;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color var(--fast),
+    background var(--fast);
+}
+
+.history-item:hover {
+  border-color: var(--accent);
+}
+
+.history-item[aria-current="true"] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.history-item strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.history-item span {
+  font-size: var(--text-xs);
+  color: var(--text-soft);
+}
+
+/* ---- Chat shell ---- */
+
+.chat-shell {
+  display: flex;
+  flex-direction: column;
+  height: min(72vh, 46rem);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-xs);
+}
+
+.chat-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.chat-head .avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+}
+
+.chat-head h2 {
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+.chat-head p {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--text-soft);
+}
+
+.chat-log {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-5);
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+  scroll-behavior: smooth;
+}
+
+/* ---- Bubbles ---- */
+
+.bubble-row {
+  display: flex;
+  gap: var(--space-3);
+  max-width: 100%;
+}
+
+.bubble-row.is-user {
+  justify-content: flex-end;
+}
+
+.bubble {
+  max-width: min(42rem, 85%);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-lg);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+}
+
+.bubble-bot {
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-start-start-radius: var(--radius-sm);
+}
+
+.bubble-user {
+  background: var(--accent);
+  color: var(--accent-contrast);
+  border-start-end-radius: var(--radius-sm);
+}
+
+.bubble-icon {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.bubble-icon svg {
+  width: 17px;
+  height: 17px;
+}
+
+/* ---- Structured blocks inside a bot bubble ---- */
+
+.chat-block {
+  margin-top: var(--space-3);
+  padding-top: var(--space-3);
+  border-top: 1px dashed var(--border);
+}
+
+.chat-block h4 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-xs);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--text-faint);
+}
+
+.chat-block ul {
+  margin: 0;
+  padding-inline-start: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+.condition-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  font-size: var(--text-sm);
+  border-bottom: 1px solid var(--border);
+}
+
+.condition-row:last-child {
+  border-bottom: none;
+}
+
+.chat-question {
+  margin-top: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent-border);
+  font-weight: 600;
+}
+
+.chat-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.chat-progress {
+  margin-top: var(--space-3);
+  font-size: var(--text-xs);
+  color: var(--text-faint);
+}
+
+/* ---- Emergency ---- */
+
+.emergency-card {
+  border: 1px solid var(--danger-fg);
+  background: var(--danger-bg);
+  color: var(--danger-fg);
+  border-radius: var(--radius-lg);
+  padding: var(--space-4) var(--space-5);
+}
+
+.emergency-card h3 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-md);
+  color: inherit;
+}
+
+.emergency-card svg {
+  width: 20px;
+  height: 20px;
+}
+
+.emergency-card ul {
+  margin: var(--space-2) 0 0;
+  padding-inline-start: var(--space-5);
+  display: grid;
+  gap: var(--space-1);
+  font-size: var(--text-sm);
+}
+
+/* ---- Typing indicator ---- */
+
+.typing {
+  display: inline-flex;
+  gap: 4px;
+  align-items: center;
+  padding: var(--space-3) var(--space-4);
+}
+
+.typing span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  animation: typing 1.2s infinite ease-in-out;
+}
+
+.typing span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+.typing span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    opacity: 0.25;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-3px);
+  }
+}
+
+/* ---- Composer ---- */
+
+.chat-composer {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-end;
+  padding: var(--space-4);
+  border-top: 1px solid var(--border);
+  background: var(--surface-alt);
+}
+
+.chat-composer textarea {
+  flex: 1;
+  resize: none;
+  min-height: 2.75rem;
+  max-height: 8rem;
+  padding: var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  line-height: 1.4;
+}
+
+.chat-composer textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.chat-composer textarea:disabled {
+  opacity: 0.6;
+}
+
+/* ---- Safety banner ---- */
+
+.safety-banner {
+  display: flex;
+  gap: var(--space-3);
+  align-items: flex-start;
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-md);
+  background: var(--warn-bg);
+  color: var(--warn-fg);
+  font-size: var(--text-sm);
+}
+
+.safety-banner svg {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  margin-top: 2px;
 }

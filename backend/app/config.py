@@ -24,6 +24,11 @@ class Config:
     SSLCOMMERZ_STORE_ID = os.environ.get("SSLCOMMERZ_STORE_ID")
     SSLCOMMERZ_STORE_PASSWORD = os.environ.get("SSLCOMMERZ_STORE_PASSWORD")
     OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+    OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "openrouter/auto")
+    OPENROUTER_URL = os.environ.get(
+        "OPENROUTER_URL", "https://openrouter.ai/api/v1/chat/completions"
+    )
+    OPENROUTER_TIMEOUT = int(os.environ.get("OPENROUTER_TIMEOUT", "40"))
 
     @staticmethod
     def init_app(app):
