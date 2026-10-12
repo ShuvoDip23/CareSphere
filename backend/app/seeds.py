@@ -7,8 +7,11 @@ verified directory data before any public deployment.
 Run with:  flask --app wsgi seed
 """
 
+from datetime import date
+
 from .extensions import db
 from .models.doctor import Doctor, DoctorAvailability, Specialty
+from .models.donor import BloodDonor
 
 SPECIALTIES = [
     ("Cardiologist", "Heart, blood pressure and circulation."),
@@ -180,9 +183,86 @@ WINDOWS = [
 ]
 
 
+# (name, blood_group, area, hospital_near, phone, last_donation_date, donations_count)
+DONORS = [
+    (
+        "Md. Rafiqul Islam",
+        "O+",
+        "Laxmipur, Rajshahi",
+        "Rajshahi Medical College Hospital",
+        "+8801712000001",
+        date(2026, 5, 14),
+        7,
+    ),
+    (
+        "Sabbir Hossain",
+        "A+",
+        "Kazla, Rajshahi",
+        "RUET Medical Centre area",
+        "+8801712000002",
+        date(2026, 6, 20),
+        4,
+    ),
+    (
+        "Tahmid Rahman",
+        "B+",
+        "Talaimari, Rajshahi",
+        "Barind Specialised Clinic",
+        "+8801712000003",
+        date(2026, 8, 18),
+        9,
+    ),
+    (
+        "Kazi Anisur Rahman",
+        "O-",
+        "Upashahar, Rajshahi",
+        "Padma Heart Centre",
+        "+8801712000004",
+        date(2026, 2, 5),
+        5,
+    ),
+    (
+        "Imtiaz Shafi",
+        "AB+",
+        "Binodpur, Rajshahi",
+        "Kazla Family Health",
+        "+8801712000005",
+        date(2026, 4, 12),
+        3,
+    ),
+    (
+        "Nayeem Abdullah",
+        "B-",
+        "Shaheb Bazar, Rajshahi",
+        "Rajshahi Central Medical",
+        "+8801712000006",
+        date(2026, 9, 1),
+        6,
+    ),
+    (
+        "Zubair Al Mamun",
+        "A-",
+        "Vodra, Rajshahi",
+        "Barind Orthopedic Centre",
+        "+8801712000007",
+        None,
+        0,
+    ),
+    (
+        "Asif Mahmud",
+        "AB-",
+        "Court, Rajshahi",
+        "Padma General Hospital",
+        "+8801712000008",
+        date(2026, 3, 10),
+        8,
+    ),
+]
+
+
 def seed_demo_data() -> dict:
     """Idempotent. Safe to run repeatedly - existing rows are left alone."""
-    created = {"specialties": 0, "doctors": 0, "windows": 0}
+    created = {"specialties": 0, "doctors": 0, "windows": 0, "donors": 0}
 
     by_name: dict[str, Specialty] = {}
     for name, description in SPECIALTIES:
@@ -235,6 +315,24 @@ def seed_demo_data() -> dict:
                 )
             )
             created["windows"] += 1
+
+    for row in DONORS:
+        name, blood_group, area, hospital_near, phone, last_donation_date, donations_count = row
+        if BloodDonor.query.filter_by(phone=phone).first():
+            continue
+
+        donor = BloodDonor(
+            name=name,
+            blood_group=blood_group,
+            area=area,
+            hospital_near=hospital_near,
+            phone=phone,
+            last_donation_date=last_donation_date,
+            donations_count=donations_count,
+            is_available=True,
+        )
+        db.session.add(donor)
+        created["donors"] += 1
 
     db.session.commit()
     return created
