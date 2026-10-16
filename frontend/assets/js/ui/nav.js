@@ -132,7 +132,7 @@ export async function renderChrome() {
         (link) =>
           `<li><a href="${link.href}"${
             link.href === current ? ' aria-current="page"' : ""
-          }>${link.label}</a></li>`,
+          }>${link.label}</a></li>`
       )
       .join("");
   }

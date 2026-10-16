@@ -39,8 +39,15 @@ def complete(messages: list[dict], temperature: float = 0.2, max_tokens: int = 7
         "max_tokens": max_tokens,
     }
 
-    request = urllib.request.Request(  # noqa: S310 - fixed https endpoint
-        current_app.config.get("OPENROUTER_URL", DEFAULT_URL),
+    url = current_app.config.get("OPENROUTER_URL", DEFAULT_URL)
+    if not url.startswith("https://"):
+        # A misconfigured OPENROUTER_URL would otherwise let urlopen follow a
+        # file:// or custom scheme and read from the server's own disk.
+        logger.error("OPENROUTER_URL must be an https:// endpoint - refusing to call")
+        return None
+
+    request = urllib.request.Request(  # noqa: S310 - scheme validated above
+        url,
         data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {api_key}",
@@ -52,7 +59,7 @@ def complete(messages: list[dict], temperature: float = 0.2, max_tokens: int = 7
 
     timeout = current_app.config.get("OPENROUTER_TIMEOUT", 40)
     try:
-        with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310
+        with urllib.request.urlopen(request, timeout=timeout) as response:  # noqa: S310  # nosec B310
             body = json.loads(response.read().decode("utf-8"))
     except urllib.error.HTTPError as exc:
         logger.warning("OpenRouter HTTP %s", exc.code)

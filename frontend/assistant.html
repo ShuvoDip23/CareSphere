@@ -29,8 +29,8 @@
         <p class="eyebrow">AI health assistant</p>
         <h1>Describe how you feel</h1>
         <p class="lede" style="max-width: 58ch">
-          Answer a few questions and CareSphere will suggest which kind of
-          specialist is most appropriate. It does not diagnose.
+          Answer a few questions and CareSphere will suggest which kind of specialist is most
+          appropriate. It does not diagnose.
         </p>
       </div>
 
@@ -51,24 +51,17 @@
         </svg>
         <span>
           <strong>If this is an emergency, do not use this page.</strong>
-          Call local emergency services or go to the nearest emergency
-          department now.
+          Call local emergency services or go to the nearest emergency department now.
         </span>
       </div>
 
       <div id="assistantRoot">
         <div class="assistant-layout">
           <aside class="assistant-history">
-            <button
-              class="btn btn-primary btn-block"
-              type="button"
-              id="newChatButton"
-            >
+            <button class="btn btn-primary btn-block" type="button" id="newChatButton">
               New assessment
             </button>
-            <h2 style="font-size: var(--text-sm); margin: var(--space-2) 0 0">
-              Past assessments
-            </h2>
+            <h2 style="font-size: var(--text-sm); margin: var(--space-2) 0 0">Past assessments</h2>
             <div class="history-list" id="historyList"></div>
           </aside>
 
@@ -81,26 +74,17 @@
               </div>
             </div>
 
-            <div
-              class="chat-log"
-              id="chatLog"
-              role="log"
-              aria-live="polite"
-            ></div>
+            <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
 
             <div class="chat-composer">
-              <label class="visually-hidden" for="chatInput"
-                >Your message</label
-              >
+              <label class="visually-hidden" for="chatInput">Your message</label>
               <textarea
                 id="chatInput"
                 rows="1"
                 placeholder="Describe how you are feeling..."
                 maxlength="1000"
               ></textarea>
-              <button class="btn btn-primary" type="button" id="sendButton">
-                Send
-              </button>
+              <button class="btn btn-primary" type="button" id="sendButton">Send</button>
             </div>
           </section>
         </div>

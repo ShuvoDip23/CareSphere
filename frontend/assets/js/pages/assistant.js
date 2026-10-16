@@ -41,7 +41,7 @@ function conditionsBlock(conditions) {
         <div class="condition-row">
           <span>${escapeHtml(c.name)}</span>
           <span class="badge badge-neutral">${escapeHtml(c.likelihood)}</span>
-        </div>`,
+        </div>`
         )
         .join("")}
     </div>`;
@@ -191,8 +191,8 @@ async function newAssessment() {
   } catch (error) {
     append(
       `<div class="empty-state">${icon("shield")}<h3>Could not start</h3><p>${escapeHtml(
-        error.message,
-      )}</p></div>`,
+        error.message
+      )}</p></div>`
     );
   } finally {
     setBusy(false);
@@ -208,7 +208,7 @@ async function openAssessment(id) {
     state.complete = session.is_complete;
     log().innerHTML = "";
     session.messages.forEach((m) =>
-      append(m.sender === "user" ? userBubble(m.text) : botBubble(m)),
+      append(m.sender === "user" ? userBubble(m.text) : botBubble(m))
     );
     markActive(id);
   } catch (error) {
@@ -232,7 +232,7 @@ async function send() {
   try {
     const response = await apiFetch(
       `/chat/sessions/${encodeURIComponent(state.sessionId)}/messages`,
-      { method: "POST", body: JSON.stringify({ message: text }) },
+      { method: "POST", body: JSON.stringify({ message: text }) }
     );
     const body = await response.json().catch(() => ({}));
     hideTyping();
@@ -259,9 +259,7 @@ async function send() {
 function markActive(id) {
   document
     .querySelectorAll(".history-item")
-    .forEach((n) =>
-      n.setAttribute("aria-current", String(n.dataset.id === id)),
-    );
+    .forEach((n) => n.setAttribute("aria-current", String(n.dataset.id === id)));
 }
 
 async function loadHistory() {
@@ -280,11 +278,9 @@ async function loadHistory() {
                 aria-current="${s.id === state.sessionId}">
           <strong>${escapeHtml(s.summary)}</strong>
           <span>${
-            s.recommended_specialty
-              ? escapeHtml(s.recommended_specialty)
-              : "In progress"
+            s.recommended_specialty ? escapeHtml(s.recommended_specialty) : "In progress"
           } &middot; ${new Date(s.started_at).toLocaleDateString()}</span>
-        </button>`,
+        </button>`
       )
       .join("");
 

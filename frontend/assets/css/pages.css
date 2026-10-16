@@ -7,12 +7,7 @@
   overflow: hidden;
   padding-block: var(--space-20) var(--space-16);
   background:
-    radial-gradient(
-      60rem 30rem at 78% -10%,
-      var(--accent-soft),
-      transparent 60%
-    ),
-    var(--page);
+    radial-gradient(60rem 30rem at 78% -10%, var(--accent-soft), transparent 60%), var(--page);
   border-bottom: 1px solid var(--border);
 }
 
@@ -534,11 +529,7 @@
 .auth-aside {
   padding: var(--space-16) var(--space-12);
   background:
-    radial-gradient(
-      40rem 24rem at 20% 0%,
-      rgb(255 255 255 / 0.12),
-      transparent 60%
-    ),
+    radial-gradient(40rem 24rem at 20% 0%, rgb(255 255 255 / 0.12), transparent 60%),
     linear-gradient(160deg, var(--brand-700), var(--brand-800));
   color: #fff;
   display: flex;
