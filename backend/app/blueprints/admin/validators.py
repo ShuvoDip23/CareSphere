@@ -6,6 +6,13 @@ doctor self-registration flow in week 2 can reuse exactly the same validation.
 
 from ...models.doctor import DAY_NAMES
 
+# Slot length is part of a consulting window, not a separate setting, so a
+# doctor can run 20-minute follow-up clinics and 45-minute first visits on
+# different days. Bounds match services/scheduling.py.
+DEFAULT_SLOT_MINUTES = 30
+MIN_SLOT_MINUTES = 5
+MAX_SLOT_MINUTES = 240
+
 MAX_FEE = 100_000
 MAX_EXPERIENCE = 70
 APPROVAL_STATUSES = ("pending", "approved", "rejected")
@@ -160,11 +167,31 @@ def validate_availability(data: dict) -> list[dict]:
             )
             continue
 
+        slot_minutes = row.get("slot_minutes", DEFAULT_SLOT_MINUTES)
+        try:
+            slot_minutes = int(slot_minutes)
+        except (TypeError, ValueError):
+            errors[f"availability.{index}"] = "slot_minutes must be a number"
+            continue
+        if not MIN_SLOT_MINUTES <= slot_minutes <= MAX_SLOT_MINUTES:
+            errors[f"availability.{index}"] = (
+                f"Appointment length must be between {MIN_SLOT_MINUTES} and "
+                f"{MAX_SLOT_MINUTES} minutes"
+            )
+            continue
+
         key = (day, start)
         if key in seen:
             continue
         seen.add(key)
-        cleaned.append({"day_of_week": day, "start_time": start, "end_time": end})
+        cleaned.append(
+            {
+                "day_of_week": day,
+                "start_time": start,
+                "end_time": end,
+                "slot_minutes": slot_minutes,
+            }
+        )
 
     if errors:
         raise ValidationError(errors)

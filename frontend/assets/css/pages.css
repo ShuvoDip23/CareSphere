@@ -1703,3 +1703,198 @@
     align-items: center;
   }
 }
+
+/* ======================== Doctor dashboard ========================== */
+
+.dash-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-bottom: var(--space-6);
+}
+
+.dash-head h1 {
+  margin: 0;
+  font-size: var(--text-2xl);
+}
+
+.dash-head p {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+}
+
+.dash-fee {
+  display: grid;
+  gap: 2px;
+  margin-inline-start: auto;
+  text-align: end;
+}
+
+.dash-fee small {
+  font-size: var(--text-xs);
+  color: var(--text-soft);
+}
+
+.dash-fee b {
+  font-size: var(--text-xl);
+  letter-spacing: var(--tracking-tight);
+}
+
+.rejection-note {
+  margin: var(--space-3) 0 0;
+  padding: var(--space-3);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 26rem);
+  gap: var(--space-6);
+  align-items: start;
+}
+
+.dash-aside {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-4));
+}
+
+/* The shared editor is three columns across; this one stacks the day name
+   over its controls so the panel stays shorter than the list beside it. */
+.dash-aside .availability-day {
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+}
+
+.dash-aside .day-times {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
+  gap: var(--space-2);
+}
+
+.dash-aside .day-times input[type="time"] {
+  min-width: 0;
+}
+
+.dash-aside .day-times select {
+  padding: var(--space-2);
+  font: inherit;
+  font-size: var(--text-sm);
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.dash-aside .availability-day + .availability-day {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border);
+}
+
+.visit-list {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.visit-row {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr) auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.visit-when {
+  display: grid;
+  gap: 2px;
+  padding-inline-end: var(--space-4);
+  border-inline-end: 1px solid var(--border);
+}
+
+.visit-when strong {
+  font-size: var(--text-lg);
+  letter-spacing: var(--tracking-tight);
+}
+
+.visit-when span {
+  font-size: var(--text-xs);
+  color: var(--text-soft);
+}
+
+.visit-who h3 {
+  margin: 0;
+  font-size: var(--text-base);
+}
+
+.visit-who p {
+  margin: var(--space-1) 0 0;
+  font-size: var(--text-sm);
+  color: var(--text-soft);
+}
+
+.visit-side {
+  display: grid;
+  justify-items: end;
+  gap: var(--space-2);
+}
+
+.visit-fee {
+  font-weight: 600;
+  font-size: var(--text-sm);
+}
+
+.visit-actions {
+  display: flex;
+  gap: var(--space-2);
+}
+
+@media (max-width: 960px) {
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+  .dash-aside {
+    position: static;
+  }
+  .dash-aside .availability-day {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* At phone width the two time inputs plus the slot select clip each other,
+   so the select drops onto its own line. */
+@media (max-width: 540px) {
+  .dash-aside .day-times {
+    grid-template-columns: 1fr 1fr;
+  }
+  .dash-aside .day-times select {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 680px) {
+  .visit-row {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+  .visit-when {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+    padding-inline-end: 0;
+    border-inline-end: none;
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .visit-side {
+    justify-items: start;
+  }
+  .dash-fee {
+    margin-inline-start: 0;
+    text-align: start;
+  }
+}

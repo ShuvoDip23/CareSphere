@@ -6,21 +6,23 @@ import { icon } from "../icons.js";
 
 const LINKS = [
   { href: "index.html", label: "Home" },
-  { href: "assistant.html", label: "Health assistant" },
-  { href: "doctors.html", label: "Find doctors" },
+  { href: "assistant.html", label: "Assistant" },
+  { href: "doctors.html", label: "Doctors" },
+  { href: "doctor-dashboard.html", label: "Practice", roles: ["doctor"] },
   {
     href: "appointments.html",
-    label: "My appointments",
+    label: "Appointments",
     roles: ["patient", "doctor", "provider", "admin"],
   },
   { href: "blood-donors.html", label: "Blood donors" },
-  { href: "ocr.html", label: "Prescription OCR" },
+  { href: "ocr.html", label: "Prescription" },
   { href: "admin.html", label: "Admin", roles: ["admin"] },
 ];
 
 /** Where a user belongs immediately after signing in. */
 export function homeFor(user) {
   if (user?.role === "admin") return "admin.html";
+  if (user?.role === "doctor") return "doctor-dashboard.html";
   return "doctors.html";
 }
 
@@ -50,8 +52,11 @@ export async function logout() {
   }
 }
 
+const HONORIFICS = /^(?:(?:Dr|Prof|Mr|Mrs|Ms|Md)\.?\s+)+/i;
+
 function initials(name) {
   const parts = String(name || "")
+    .replace(HONORIFICS, "")
     .trim()
     .split(/\s+/)
     .filter(Boolean);
