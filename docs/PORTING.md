@@ -12,8 +12,8 @@ Status values: `not started` · `in progress` · `in review` · `done`
 | --- | --- | --- | --- | --- | --- |
 | 1 | App factory, config, CI/CD, auth | 4.1 | 1 | done | PBKDF2 password hashing; no role from request body; fail-fast secret |
 | 2 | Doctor discovery + availability | 4.2 | 1 | done | Specialty is now its own table with a unique slug; all reads are side-effect free |
-| 3 | Appointment booking | 4.4 | 3 | not started | TTL releases abandoned `payment_pending` slots instead of locking them forever |
-| 4 | Payments (SSLCommerz) | 4.5 | 4 | not started | **Verify the gateway signature.** Prototype confirmed payment from unauthenticated query params |
+| 3 | Appointment booking | 4.4 | 3 | done | Slot uniqueness enforced by a DB constraint, not a check-then-insert race; fee snapshotted at booking; `user_id` is a real FK. Cancelling clears `slot_key`, which releases the slot |
+| 4 | Payments (SSLCommerz) | 4.5 | 4 | not started | **Validation must be mandatory, not optional.** The prototype fell back to `source = validation or payload`, so omitting `val_id` let the query string validate itself. Also needs the TTL that releases slots abandoned mid-payment — not before, since `pending_payment` is the normal resting state until then |
 | 5 | Two-stage AI assistant | 4.3 | 5 | not started | Reconcile urgency levels to Routine / Urgent / Emergency per the proposal |
 | 6 | Chat history | 4.6 | 6 | not started | Ownership check on every session read |
 | 7 | Emergency assist | 4.7 | 6–7 | not started | Real Rajshahi hospital data; add PDF export and directions link |

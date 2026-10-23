@@ -8,6 +8,11 @@ const LINKS = [
   { href: "index.html", label: "Home" },
   { href: "assistant.html", label: "Health assistant" },
   { href: "doctors.html", label: "Find doctors" },
+  {
+    href: "appointments.html",
+    label: "My appointments",
+    roles: ["patient", "doctor", "provider", "admin"],
+  },
   { href: "blood-donors.html", label: "Blood donors" },
   { href: "ocr.html", label: "Prescription OCR" },
   { href: "admin.html", label: "Admin", roles: ["admin"] },

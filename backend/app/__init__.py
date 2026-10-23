@@ -54,6 +54,7 @@ def _register_blueprints(app: Flask) -> None:
     pull request that actually ports that module, so the diff stays readable.
     """
     from .blueprints.admin import admin_bp
+    from .blueprints.appointments import appointments_bp
     from .blueprints.auth import auth_bp
     from .blueprints.chat import chat_bp
     from .blueprints.doctors import doctors_bp
@@ -64,8 +65,8 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(admin_bp)
     app.register_blueprint(chat_bp)
     app.register_blueprint(donors_bp)
+    app.register_blueprint(appointments_bp)
 
-    # Week 3 - Shuvo  from .blueprints.appointments import appointments_bp
     # Week 4 - Shuvo  from .blueprints.payments import payments_bp
     # Week 6 - Shuvo  from .blueprints.emergency import emergency_bp
     # Week 6 - Ifti   from .blueprints.ambulance import ambulance_bp
