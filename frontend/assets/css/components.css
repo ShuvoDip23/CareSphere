@@ -879,6 +879,20 @@ table.data tbody tr:hover {
   user-select: none;
 }
 
+/* A row whose two time inputs live in a wrapper, so a third control (slot
+   length) can join them. The admin modal uses the flat three-column form. */
+.availability-day.is-wrapped {
+  /* The day name takes only what it needs; the time inputs get the rest,
+     because a native time input clips to "09:00 AN" long before it wraps. */
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.availability-day .day-times {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--space-2);
+}
+
 .availability-day input[type="time"] {
   width: 100%;
   min-width: 7rem;

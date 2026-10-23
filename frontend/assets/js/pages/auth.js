@@ -1,6 +1,8 @@
-import { postJson } from "../api.js";
+import { apiFetch, postJson } from "../api.js";
 import { homeFor, renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
+
+const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
 const MIN_PASSWORD = 8;
 
@@ -20,6 +22,18 @@ function setAlert(message, variant = "error") {
   if (!box) return;
   box.className = `alert alert-${variant} is-visible`;
   box.textContent = message;
+}
+
+/** Show the first field error inline and the rest in the alert box. */
+function setFieldErrors(fields, fallback) {
+  const entries = Object.entries(fields || {});
+  if (!entries.length) {
+    setAlert(fallback);
+    return;
+  }
+  setAlert(entries.map(([, message]) => message).join(" "));
+  const first = document.getElementById(entries[0][0]);
+  first?.focus();
 }
 
 function clearAlert() {
@@ -63,9 +77,78 @@ function wireLogin() {
   });
 }
 
+function availabilityEditor() {
+  const node = document.getElementById("availabilityEditor");
+  if (!node) return;
+
+  node.innerHTML = DAYS.map(
+    (name, index) => `
+      <div class="availability-day is-wrapped">
+        <label>
+          <input type="checkbox" data-day="${index}" />
+          ${name}
+        </label>
+        <div class="day-times">
+          <input type="time" data-start="${index}" value="09:00" disabled />
+          <input type="time" data-end="${index}" value="13:00" disabled />
+        </div>
+      </div>`
+  ).join("");
+
+  node.addEventListener("change", (event) => {
+    const box = event.target.closest('input[type="checkbox"][data-day]');
+    if (!box) return;
+    ["start", "end"].forEach((key) => {
+      node.querySelector(`[data-${key}="${box.dataset.day}"]`).disabled = !box.checked;
+    });
+  });
+}
+
+function collectAvailability() {
+  const node = document.getElementById("availabilityEditor");
+  if (!node) return [];
+  return [...node.querySelectorAll('input[type="checkbox"][data-day]')]
+    .filter((box) => box.checked)
+    .map((box) => ({
+      day_of_week: Number(box.dataset.day),
+      start_time: node.querySelector(`[data-start="${box.dataset.day}"]`).value,
+      end_time: node.querySelector(`[data-end="${box.dataset.day}"]`).value,
+    }));
+}
+
+function selectedRole() {
+  return document.querySelector('input[name="accountType"]:checked')?.value || "patient";
+}
+
+function wireRoleChoice() {
+  const group = document.querySelector(".role-choice");
+  if (!group) return;
+
+  const apply = () => {
+    const isDoctor = selectedRole() === "doctor";
+    document.getElementById("doctorFields").hidden = !isDoctor;
+    document.getElementById("submitButton").textContent = isDoctor
+      ? "Submit application"
+      : "Create account";
+    group.querySelectorAll(".role-option").forEach((option) => {
+      option.classList.toggle("is-selected", option.querySelector("input").checked);
+    });
+  };
+
+  group.addEventListener("change", apply);
+  apply();
+}
+
+function value(id) {
+  return document.getElementById(id).value.trim();
+}
+
 function wireRegister() {
   const form = document.getElementById("registerForm");
   if (!form) return;
+
+  wireRoleChoice();
+  availabilityEditor();
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -83,22 +166,51 @@ function wireRegister() {
       return;
     }
 
+    const isDoctor = selectedRole() === "doctor";
     const button = document.getElementById("submitButton");
-    busy(button, true, "Creating account\u2026");
-    try {
-      await postJson("/register", {
-        name: document.getElementById("name").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        password,
+    busy(button, true, isDoctor ? "Submitting\u2026" : "Creating account\u2026");
+
+    const payload = {
+      name: value("name"),
+      email: value("email"),
+      password,
+    };
+    if (isDoctor) {
+      Object.assign(payload, {
+        specialty: value("specialty"),
+        qualification: value("qualification"),
+        hospital: value("hospital"),
+        location: value("location"),
+        phone: value("phone"),
+        fee: value("fee"),
+        experience_years: value("experienceYears") || 0,
+        availability: collectAvailability(),
       });
-      toast("Account created. Welcome to CareSphere.", "success");
-      setTimeout(() => {
-        window.location.href = "doctors.html";
-      }, 600);
-    } catch (error) {
-      setAlert(error.message);
-      busy(button, false, "Create account");
     }
+
+    const response = await apiFetch(isDoctor ? "/register/doctor" : "/register", {
+      method: "POST",
+      body: JSON.stringify(payload),
+    });
+    const data = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      // The application endpoint reports every bad field at once; the patient
+      // endpoint returns a single message.
+      setFieldErrors(data.fields, data.error || "Could not create the account.");
+      busy(button, false, isDoctor ? "Submit application" : "Create account");
+      return;
+    }
+
+    toast(
+      isDoctor
+        ? "Application submitted. An administrator will review it."
+        : "Account created. Welcome to CareSphere.",
+      "success"
+    );
+    setTimeout(() => {
+      window.location.href = isDoctor ? "doctor-dashboard.html" : "doctors.html";
+    }, 700);
   });
 }
 

@@ -24,16 +24,25 @@ function approvalBanner(doctor) {
   if (doctor.approval_status === "approved") return "";
 
   const rejected = doctor.approval_status === "rejected";
+  // "Awaiting review" and "awaiting review of the qualification you changed"
+  // are different situations, and the doctor deserves to know which.
+  const why = rejected
+    ? "An administrator has asked for changes before your profile goes live."
+    : doctor.pending_reason ||
+      "Your profile is not yet visible in the directory, so patients cannot book you.";
+
   return `
     <div class="alert ${rejected ? "alert-error" : "alert-info"} is-visible">
       <strong>${rejected ? "Profile not approved" : "Awaiting approval"}</strong>
-      <p style="margin: var(--space-2) 0 0">
-        ${
-          rejected
-            ? "An administrator has asked for changes before your profile goes live."
-            : "Your profile is not yet visible in the directory, so patients cannot book you."
-        }
-      </p>
+      <p style="margin: var(--space-2) 0 0">${escapeHtml(why)}</p>
+      ${
+        doctor.pending_reason && !rejected
+          ? `<p style="margin: var(--space-2) 0 0; font-size: var(--text-sm)">
+               Patients cannot book you until it is reviewed. Appointments you
+               already have are unaffected.
+             </p>`
+          : ""
+      }
       ${
         doctor.rejection_note
           ? `<p class="rejection-note">${escapeHtml(doctor.rejection_note)}</p>`
@@ -59,6 +68,91 @@ function renderProfile(doctor) {
         <b>${formatFee(doctor.fee)}</b>
       </span>
     </div>`;
+}
+
+/* ------------------------------------------------------------ profile */
+
+/* Which fields re-open a review. Mirrors Doctor.REVIEWED_FIELDS on the server
+   so the warning shown here matches what actually happens. */
+const REVIEWED = ["name", "specialty", "qualification", "hospital", "location"];
+
+const PROFILE_FIELDS = [
+  ["name", "Full name", "text"],
+  ["specialty", "Specialty", "text"],
+  ["qualification", "Qualifications", "text"],
+  ["hospital", "Hospital or chamber", "text"],
+  ["location", "Area", "text"],
+  ["phone", "Contact number", "tel"],
+  ["fee", "Consultation fee (BDT)", "number"],
+];
+
+function profileField([key, label, type]) {
+  const reviewed = REVIEWED.includes(key);
+  const current = key === "specialty" ? state.profile.specialty?.name : state.profile[key];
+  return `
+    <div class="field">
+      <label for="p_${key}">
+        ${label}
+        ${reviewed ? '<span class="needs-review">needs review</span>' : ""}
+      </label>
+      <input class="input" id="p_${key}" type="${type}"${type === "number" ? ' min="0" step="any"' : ""}
+             value="${escapeHtml(current ?? "")}" />
+    </div>`;
+}
+
+function renderProfileEditor() {
+  $("profileEditor").innerHTML = `
+    ${PROFILE_FIELDS.map(profileField).join("")}
+    <div class="field">
+      <label for="p_bio">About you</label>
+      <textarea class="input" id="p_bio" rows="3" maxlength="1000">${escapeHtml(
+        state.profile.bio ?? ""
+      )}</textarea>
+    </div>
+    <p class="field-hint">
+      Fields marked <b>needs review</b> are what the administrator approved.
+      Changing one returns your profile to the queue until it is checked again.
+    </p>
+    <p class="field-error" id="profileError" hidden></p>
+    <button class="btn btn-primary btn-block" type="button" id="saveProfile">Save profile</button>`;
+
+  $("saveProfile").addEventListener("click", (event) => saveProfile(event.currentTarget));
+}
+
+async function saveProfile(button) {
+  button.disabled = true;
+  button.textContent = "Saving\u2026";
+  $("profileError").hidden = true;
+
+  const payload = { bio: $("p_bio").value.trim() };
+  PROFILE_FIELDS.forEach(([key]) => {
+    payload[key] = $(`p_${key}`).value.trim();
+  });
+
+  const response = await apiFetch("/doctor/profile", {
+    method: "PUT",
+    body: JSON.stringify(payload),
+  });
+  const data = await response.json().catch(() => ({}));
+
+  if (response.ok) {
+    const wasApproved = state.profile.approval_status === "approved";
+    state.profile = data;
+    renderProfile(data);
+    renderProfileEditor();
+    toast(
+      wasApproved && data.approval_status === "pending"
+        ? "Saved. Your profile is back in the review queue."
+        : "Profile updated.",
+      "success"
+    );
+  } else {
+    $("profileError").textContent =
+      Object.values(data.fields || {}).join(" ") || data.error || "Could not save.";
+    $("profileError").hidden = false;
+    button.disabled = false;
+    button.textContent = "Save profile";
+  }
 }
 
 /* ------------------------------------------------------- appointments */
@@ -162,7 +256,7 @@ function renderAvailability(windows) {
     const w = byDay.get(index);
     const off = w ? "" : " disabled";
     return `
-      <div class="availability-day">
+      <div class="availability-day is-wrapped">
         <label>
           <input type="checkbox" data-day="${index}"${w ? " checked" : ""} />
           ${name}
@@ -281,6 +375,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   renderProfile(state.profile);
+  renderProfileEditor();
   renderAvailability(state.profile.availability || []);
   wireScopes();
   await loadAppointments();

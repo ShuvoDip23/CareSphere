@@ -16,9 +16,9 @@ from flask import Blueprint, jsonify, request
 
 from ...extensions import db
 from ...models.appointment import Appointment
-from ...models.doctor import Doctor, DoctorAvailability
+from ...models.doctor import Doctor, DoctorAvailability, Specialty
 from ...utils.security import current_user, doctor_required
-from ..admin.validators import ValidationError, validate_availability
+from ..admin.validators import ValidationError, validate_availability, validate_doctor
 
 doctor_bp = Blueprint("doctor_portal", __name__, url_prefix="/api/doctor")
 
@@ -204,3 +204,93 @@ def replace_availability():
     # silently deleting their appointments here would be far worse than
     # leaving the doctor to cancel them deliberately.
     return jsonify([window.to_dict() for window in doctor.availability])
+
+
+def _changed_reviewed_fields(doctor: Doctor, payload: dict) -> list[str]:
+    """Which identity fields this edit would actually change.
+
+    Compares values rather than trusting that a key was sent: an editor that
+    posts the whole form would otherwise re-open a review every time a doctor
+    touched their bio.
+    """
+    changed = []
+    for field in Doctor.REVIEWED_FIELDS:
+        if field not in payload:
+            continue
+        if field == "specialty":
+            current = doctor.specialty.name if doctor.specialty else None
+        else:
+            current = getattr(doctor, field)
+        new = payload[field]
+        if str(current or "").strip() != str(new or "").strip():
+            changed.append(field)
+    return changed
+
+
+FIELD_LABELS = {
+    "name": "name",
+    "specialty": "specialty",
+    "qualification": "qualification",
+    "hospital": "hospital",
+    "location": "location",
+}
+
+
+@doctor_bp.put("/profile")
+@doctor_required
+def update_profile():
+    """Edit your own profile.
+
+    Not every edit is equal. Consulting hours, bio, phone and fee describe how
+    a doctor operates and apply at once - making someone wait for an admin to
+    publish a corrected phone number helps nobody.
+
+    Name, specialty, qualification, hospital and location are the claims the
+    administrator approved. Changing one re-opens the question they answered,
+    so the profile goes back in the queue and leaves the directory until it is
+    looked at again. Appointments already booked are untouched; only new
+    bookings stop, exactly as when a consulting window is removed.
+    """
+    doctor = _profile()
+    if doctor is None:
+        return _unlinked()
+
+    body = request.get_json(silent=True) or {}
+    # A doctor cannot approve themselves. Same stance as `role` on /register.
+    editable = {
+        key: value
+        for key, value in body.items()
+        if key in Doctor.REVIEWED_FIELDS + Doctor.OPERATIONAL_FIELDS
+    }
+
+    try:
+        payload = validate_doctor(editable, partial=True)
+    except ValidationError as error:
+        return jsonify(
+            {"error": "Please correct the highlighted fields", "fields": error.errors}
+        ), 400
+
+    changed = _changed_reviewed_fields(doctor, payload)
+
+    specialty_name = payload.pop("specialty", None)
+    if specialty_name:
+        doctor.specialty = Specialty.get_or_create(specialty_name)
+    for field, value in payload.items():
+        setattr(doctor, field, value)
+
+    if changed and doctor.approval_status == Doctor.STATUS_APPROVED:
+        doctor.approval_status = Doctor.STATUS_PENDING
+        labels = [FIELD_LABELS.get(field, field) for field in changed]
+        doctor.pending_reason = (
+            "You changed your " + _join(labels) + ", so your profile is being reviewed again."
+        )
+
+    db.session.commit()
+    return jsonify(doctor.to_dict(include_availability=True))
+
+
+def _join(items: list[str]) -> str:
+    """`[a, b, c]` -> `a, b and c`."""
+    if len(items) == 1:
+        return items[0]
+    return ", ".join(items[:-1]) + " and " + items[-1]

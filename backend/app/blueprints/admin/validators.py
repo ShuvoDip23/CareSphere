@@ -13,6 +13,10 @@ DEFAULT_SLOT_MINUTES = 30
 MIN_SLOT_MINUTES = 5
 MAX_SLOT_MINUTES = 240
 
+#: Kept here rather than imported from the auth blueprint so validation has
+#: no dependency on a route module.
+MIN_PASSWORD_LENGTH = 8
+
 MAX_FEE = 100_000
 MAX_EXPERIENCE = 70
 APPROVAL_STATUSES = ("pending", "approved", "rejected")
@@ -196,3 +200,57 @@ def validate_availability(data: dict) -> list[dict]:
     if errors:
         raise ValidationError(errors)
     return cleaned
+
+
+def validate_application(data: dict) -> tuple[dict, dict, list[dict]]:
+    """Split a doctor sign-up into (account, profile, consulting windows).
+
+    Account and profile are validated together so the applicant sees every
+    problem at once rather than fixing the password and then discovering the
+    fee is wrong.
+
+    `approval_status` and `rejection_note` are stripped before validation, not
+    rejected: a payload carrying them is far more likely to be a copy-pasted
+    object than an attack, and silently dropping them is the same stance
+    `/api/register` already takes on `role`.
+    """
+    if not isinstance(data, dict):
+        raise ValidationError({"_": "Request body must be a JSON object"})
+
+    body = {k: v for k, v in data.items() if k not in ("approval_status", "rejection_note")}
+
+    errors: dict[str, str] = {}
+    account: dict = {}
+
+    email = str(body.get("email") or "").strip().lower()
+    if not email or "@" not in email:
+        errors["email"] = "A valid email address is required"
+    else:
+        account["email"] = email
+
+    password = body.get("password") or ""
+    if len(password) < MIN_PASSWORD_LENGTH:
+        errors["password"] = f"Password must be at least {MIN_PASSWORD_LENGTH} characters"
+    else:
+        account["password"] = password
+
+    # The account name and the professional name are the same thing: a doctor
+    # typing it twice is a chance for them to disagree.
+    try:
+        profile = validate_doctor(body)
+    except ValidationError as error:
+        profile = {}
+        errors.update(error.errors)
+
+    windows: list[dict] = []
+    if body.get("availability"):
+        try:
+            windows = validate_availability(body)
+        except ValidationError as error:
+            errors.update(error.errors)
+
+    if errors:
+        raise ValidationError(errors)
+
+    account["name"] = profile["name"]
+    return account, profile, windows
