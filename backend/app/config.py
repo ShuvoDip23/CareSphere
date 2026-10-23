@@ -21,6 +21,10 @@ class Config:
 
     # SSLCommerz sandbox. Never commit real values - use .env locally and
     # GitHub Actions secrets in CI.
+    # How many days ahead a patient may book. Past this a doctor's weekly
+    # window stops being a reliable promise.
+    APPOINTMENT_HORIZON_DAYS = int(os.environ.get("APPOINTMENT_HORIZON_DAYS", 60))
+
     SSLCOMMERZ_STORE_ID = os.environ.get("SSLCOMMERZ_STORE_ID")
     SSLCOMMERZ_STORE_PASSWORD = os.environ.get("SSLCOMMERZ_STORE_PASSWORD")
     OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")

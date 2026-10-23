@@ -1,6 +1,7 @@
-import { getJson, escapeHtml, formatFee, formatTime } from "../api.js";
+import { getJson, escapeHtml, formatTime } from "../api.js";
 import { icon, stars } from "../icons.js";
-import { renderChrome } from "../ui/nav.js";
+import { mountBooking, mountSignInPrompt } from "../ui/booking.js";
+import { loadCurrentUser, renderChrome } from "../ui/nav.js";
 
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
@@ -77,20 +78,7 @@ function render(doctor) {
       </article>
     </div>
 
-    <aside class="card booking-card">
-      <div class="booking-fee">
-        <span class="text-soft" style="font-size:var(--text-sm)">Consultation fee</span>
-        <b>${formatFee(doctor.fee)}</b>
-      </div>
-      <button class="btn btn-primary btn-block btn-lg" type="button" disabled>
-        ${icon("calendar")} Book appointment
-      </button>
-      <p class="notice" style="margin-top:var(--space-4)">
-        ${icon("info")}
-        <span>Online booking and payment arrive in the next milestone. Until then,
-        contact the hospital directly using the number above.</span>
-      </p>
-    </aside>`;
+    <aside class="card booking-card" id="bookingPanel"></aside>`;
 }
 
 function renderMissing(message) {
@@ -115,7 +103,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   try {
-    render(await getJson(`/doctors/${encodeURIComponent(id)}`));
+    const doctor = await getJson(`/doctors/${encodeURIComponent(id)}`);
+    render(doctor);
+
+    const panel = document.getElementById("bookingPanel");
+    const user = await loadCurrentUser();
+    if (user) {
+      mountBooking(panel, doctor, {
+        onSignedOut: () => mountSignInPrompt(panel, doctor),
+      });
+    } else {
+      mountSignInPrompt(panel, doctor);
+    }
   } catch (error) {
     renderMissing(
       error.status === 404

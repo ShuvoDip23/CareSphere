@@ -4,6 +4,17 @@ import { toast } from "../ui/toast.js";
 
 const MIN_PASSWORD = 8;
 
+/** Where to land after signing in, when the page was reached from a booking.
+ *
+ * Only a bare same-origin page name is accepted. An absolute URL, a
+ * protocol-relative `//evil.test` or a traversal is discarded and the role's
+ * own home is used instead, so `?next=` cannot bounce a freshly signed-in
+ * user off the site.
+ */
+function safeNext(raw) {
+  return /^[a-z0-9-]+\.html(\?[^#]*)?$/i.test(String(raw || "")) ? raw : null;
+}
+
 function setAlert(message, variant = "error") {
   const box = document.getElementById("formAlert");
   if (!box) return;
@@ -41,8 +52,9 @@ function wireLogin() {
       const data = await postJson("/login", payload);
       toast("Signed in. Redirecting\u2026", "success");
       // The server's role decides the destination - the form never claims one.
+      const next = safeNext(new URLSearchParams(window.location.search).get("next"));
       setTimeout(() => {
-        window.location.href = homeFor(data.user);
+        window.location.href = next || homeFor(data.user);
       }, 500);
     } catch (error) {
       setAlert(error.message);
