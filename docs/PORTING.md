@@ -20,8 +20,8 @@ Status values: `not started` · `in progress` · `in review` · `done`
 | 8 | Doctor dashboard | 4.1 | 8 | done | Own bookings, patient reason, completed/no-show outcomes, self-service consulting hours. Every route resolves the doctor from the session — no `/api/doctor/<id>/` route exists |
 | 9 | UI system rollout | — | 2–10 | in progress | Tokens and components applied to every page as it is ported |
 | 10 | Admin console (doctor CRUD) | 4.1 | 1 | done | Role resolved from the DB on every request; validation shared with week-2 doctor signup |
-| 11 | Doctor self-registration + approval queue | 4.1 | 2 | not started | Reuses `blueprints/admin/validators.py`; edits to an approved profile drop it back to pending. Replaces the `link-doctor` CLI stopgap and is where one-account-per-profile becomes a DB constraint, since that flow creates links concurrently |
-| 12 | Doctor dashboard | 4.1 | 2 | in progress | Approval state and rejection note are shown (module 8). Profile editing lands with module 11, where editing an approved profile must drop it back to pending |
+| 11 | Doctor self-registration + approval queue | 4.1 | 2 | done | `POST /api/register/doctor` creates account, pending profile and link in one transaction; `approval_status` is never read from the payload. One-account-per-profile is now a DB constraint (`uq_doctor_account`) |
+| 12 | Doctor dashboard | 4.1 | 2 | done | Profile editing splits by field: hours, bio, phone and fee apply at once; name, specialty, qualification, hospital and location return the profile to the queue with a reason the banner explains |
 
 ## Community services — Ifti (2203177)
 

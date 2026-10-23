@@ -55,12 +55,24 @@ function row(doctor) {
       </td>
       <td>${escapeHtml(summariseAvailability(doctor.availability))}</td>
       <td>${formatFee(doctor.fee)}</td>
-      <td><span class="badge badge-${STATUS_VARIANT[status] || "neutral"}">${escapeHtml(status)}</span></td>
+      <td>
+        <span class="badge badge-${STATUS_VARIANT[status] || "neutral"}">${escapeHtml(status)}</span>
+        ${
+          doctor.pending_reason
+            ? `<div class="queue-reason">${escapeHtml(doctor.pending_reason)}</div>`
+            : ""
+        }
+      </td>
       <td>
         <div class="row-actions">
           ${
             status !== "approved"
               ? `<button class="btn btn-secondary btn-sm" data-action="approve" data-id="${doctor.id}">Approve</button>`
+              : ""
+          }
+          ${
+            status !== "rejected"
+              ? `<button class="btn btn-ghost btn-sm" data-action="reject" data-id="${doctor.id}">Decline</button>`
               : ""
           }
           <button class="btn btn-secondary btn-sm" data-action="edit" data-id="${doctor.id}">Edit</button>
@@ -283,6 +295,44 @@ async function approve(id) {
   }
 }
 
+let rejectingId = null;
+
+function openReject(id) {
+  rejectingId = id;
+  $("rejectNote").value = "";
+  $("rejectError").hidden = true;
+  $("rejectModal").hidden = false;
+  $("rejectNote").focus();
+}
+
+function closeReject() {
+  rejectingId = null;
+  $("rejectModal").hidden = true;
+}
+
+async function confirmReject() {
+  const note = $("rejectNote").value.trim();
+  if (!note) {
+    // A decline with no reason gives the doctor nothing to act on.
+    $("rejectError").textContent = "Please say what needs to change.";
+    $("rejectError").hidden = false;
+    return;
+  }
+
+  try {
+    await getJson(`/admin/doctors/${rejectingId}/status`, {
+      method: "POST",
+      body: JSON.stringify({ approval_status: "rejected", rejection_note: note }),
+    });
+    closeReject();
+    toast("Application declined. The doctor can see your note.", "success");
+    await refresh();
+  } catch (error) {
+    $("rejectError").textContent = error.message;
+    $("rejectError").hidden = false;
+  }
+}
+
 async function remove(id) {
   const doctor = state.doctors.find((item) => item.id === id);
   if (!window.confirm(`Remove ${doctor?.name || "this doctor"} permanently?`)) return;
@@ -356,7 +406,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const action = button.dataset.action;
     if (action === "edit") openModal(state.doctors.find((item) => item.id === id));
     if (action === "approve") approve(id);
+    if (action === "reject") openReject(id);
     if (action === "delete") remove(id);
+  });
+
+  $("cancelReject").addEventListener("click", closeReject);
+  $("confirmReject").addEventListener("click", confirmReject);
+  $("rejectModal").addEventListener("click", (event) => {
+    if (event.target.id === "rejectModal") closeReject();
   });
 
   await refresh();

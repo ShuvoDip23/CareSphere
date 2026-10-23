@@ -37,6 +37,23 @@
 
           <div class="alert" id="formAlert" role="alert"></div>
 
+          <div class="role-choice" role="radiogroup" aria-label="What kind of account">
+            <label class="role-option">
+              <input type="radio" name="accountType" value="patient" checked />
+              <span>
+                <strong>I am a patient</strong>
+                <small>Book appointments and use the health assistant.</small>
+              </span>
+            </label>
+            <label class="role-option">
+              <input type="radio" name="accountType" value="doctor" />
+              <span>
+                <strong>I am a doctor</strong>
+                <small>Apply to list your practice. An administrator reviews it first.</small>
+              </span>
+            </label>
+          </div>
+
           <form id="registerForm" novalidate>
             <div class="field">
               <label for="name">Full name</label>
@@ -73,6 +90,71 @@
                 placeholder="Repeat your password"
               />
             </div>
+            <div id="doctorFields" hidden>
+              <p class="notice" style="margin-block: var(--space-2) var(--space-5)">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  aria-hidden="true"
+                >
+                  <circle cx="12" cy="12" r="9" />
+                  <path d="M12 11v5M12 8h.01" />
+                </svg>
+                <span
+                  >Your profile stays private until an administrator approves it. You can sign in
+                  and finish setting up your consulting hours straight away.</span
+                >
+              </p>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="specialty">Specialty</label>
+                  <input id="specialty" type="text" placeholder="e.g. Cardiologist" />
+                </div>
+                <div class="field">
+                  <label for="experienceYears">Years of experience</label>
+                  <input id="experienceYears" type="number" min="0" max="70" value="0" />
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="qualification">Qualifications</label>
+                <input id="qualification" type="text" placeholder="e.g. MBBS, FCPS (Medicine)" />
+              </div>
+
+              <div class="field">
+                <label for="hospital">Hospital or chamber</label>
+                <input id="hospital" type="text" placeholder="e.g. Padma General Hospital" />
+              </div>
+
+              <div class="field">
+                <label for="location">Area</label>
+                <input id="location" type="text" placeholder="e.g. Laxmipur, Rajshahi" />
+              </div>
+
+              <div class="form-row">
+                <div class="field">
+                  <label for="phone">Contact number</label>
+                  <input id="phone" type="tel" placeholder="+8801…" />
+                </div>
+                <div class="field">
+                  <label for="fee">Consultation fee (BDT)</label>
+                  <input id="fee" type="number" min="0" step="any" placeholder="1500" />
+                </div>
+              </div>
+
+              <div class="field">
+                <span class="field-label">Consulting hours</span>
+                <div class="availability-editor" id="availabilityEditor"></div>
+                <span class="field-hint">
+                  Optional now — you can set these from your dashboard later.
+                </span>
+              </div>
+            </div>
+
             <button class="btn btn-primary btn-block btn-lg" type="submit" id="submitButton">
               Create account
             </button>

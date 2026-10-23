@@ -184,6 +184,35 @@
       </div>
     </div>
 
+    <div class="modal-backdrop" id="rejectModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="rejectTitle">
+        <div class="modal-head">
+          <h2 id="rejectTitle">Decline this application</h2>
+        </div>
+        <div class="modal-body">
+          <p class="text-soft" style="margin: 0 0 var(--space-4); font-size: var(--text-sm)">
+            The doctor sees this note on their dashboard, so say what they need to change in order
+            to reapply.
+          </p>
+          <div class="field">
+            <label for="rejectNote">Reason</label>
+            <textarea
+              class="input"
+              id="rejectNote"
+              rows="3"
+              maxlength="500"
+              placeholder="e.g. Please add your BMDC registration number."
+            ></textarea>
+          </div>
+          <p class="field-error" id="rejectError" hidden></p>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-secondary" type="button" id="cancelReject">Cancel</button>
+          <button class="btn btn-danger" type="button" id="confirmReject">Decline</button>
+        </div>
+      </div>
+    </div>
+
     <script type="module" src="assets/js/pages/admin.js"></script>
   </body>
 </html>

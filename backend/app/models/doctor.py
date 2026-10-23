@@ -56,12 +56,28 @@ class Specialty(db.Model):
 
 class Doctor(db.Model):
     __tablename__ = "doctors"
+    # Named explicitly: an anonymous constraint cannot be dropped again in a
+    # migration downgrade, which Alembic warns about when it autogenerates one.
+    __table_args__ = (db.UniqueConstraint("user_id", name="uq_doctor_account"),)
 
     STATUS_PENDING = "pending"
     STATUS_APPROVED = "approved"
     STATUS_REJECTED = "rejected"
 
+    #: Changing one of these re-opens the question the admin already answered -
+    #: "is this person who they say they are?" - so the profile goes back in
+    #: the queue.
+    REVIEWED_FIELDS = ("name", "specialty", "qualification", "hospital", "location")
+    #: How the doctor operates rather than who they are. Applied at once: a
+    #: doctor cancelling tomorrow's clinic cannot wait for an admin, or
+    #: patients keep booking slots that will not be honoured.
+    OPERATIONAL_FIELDS = ("bio", "phone", "fee")
+
     id = db.Column(db.Integer, primary_key=True)
+    # Unique, not merely indexed: doctors now create this link themselves, so
+    # two concurrent requests can no longer end up with one account pointing
+    # at two profiles. NULL stays repeatable - a seeded profile with no account
+    # yet is normal, and both SQLite and PostgreSQL treat NULLs as distinct.
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=True)
     specialty_id = db.Column(
         db.Integer, db.ForeignKey("specialties.id"), nullable=False, index=True
@@ -81,6 +97,13 @@ class Doctor(db.Model):
 
     approval_status = db.Column(db.String(20), default=STATUS_PENDING, nullable=False, index=True)
     rejection_note = db.Column(db.String(500), nullable=True)
+
+    # Why the profile is sitting in the queue. NULL means a first application;
+    # a sentence means an already-approved doctor edited something that has to
+    # be looked at again. "Awaiting review" reads very differently from
+    # "awaiting review of your changed qualification", and the doctor deserves
+    # to know which one they are waiting on.
+    pending_reason = db.Column(db.String(300), nullable=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), nullable=False)
 
     specialty = db.relationship("Specialty", back_populates="doctors")
@@ -118,6 +141,7 @@ class Doctor(db.Model):
             "experience_years": self.experience_years,
             "approval_status": self.approval_status,
             "rejection_note": self.rejection_note,
+            "pending_reason": self.pending_reason,
             "specialty": self.specialty.to_dict() if self.specialty else None,
         }
         if include_availability:
