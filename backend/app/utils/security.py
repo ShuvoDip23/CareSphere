@@ -56,4 +56,5 @@ def roles_required(*roles: str):
 
 
 admin_required = roles_required(User.ROLE_ADMIN)
+doctor_required = roles_required(User.ROLE_DOCTOR)
 patient_required = roles_required(User.ROLE_PATIENT)

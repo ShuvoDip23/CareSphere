@@ -33,7 +33,16 @@ class Appointment(db.Model):
     STATUS_CONFIRMED = "confirmed"
     STATUS_CANCELLED = "cancelled"
     STATUS_COMPLETED = "completed"
-    STATUSES = (STATUS_PENDING_PAYMENT, STATUS_CONFIRMED, STATUS_CANCELLED, STATUS_COMPLETED)
+    STATUS_NO_SHOW = "no_show"
+    STATUSES = (
+        STATUS_PENDING_PAYMENT,
+        STATUS_CONFIRMED,
+        STATUS_CANCELLED,
+        STATUS_COMPLETED,
+        STATUS_NO_SHOW,
+    )
+    #: What a doctor may set once the appointment time has passed.
+    DOCTOR_OUTCOMES = (STATUS_COMPLETED, STATUS_NO_SHOW)
 
     PAYMENT_UNPAID = "unpaid"
     PAYMENT_PAID = "paid"

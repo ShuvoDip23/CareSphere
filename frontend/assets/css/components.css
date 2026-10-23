@@ -490,7 +490,8 @@
     color var(--fast);
 }
 
-.segmented button[aria-selected="true"] {
+.segmented button[aria-selected="true"],
+.segmented button[aria-pressed="true"] {
   background: var(--surface);
   color: var(--accent);
   box-shadow: var(--shadow-xs);

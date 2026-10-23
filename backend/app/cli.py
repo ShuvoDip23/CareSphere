@@ -39,3 +39,41 @@ def register_cli(app: Flask) -> None:
         db.session.add(user)
         db.session.commit()
         click.echo(f"Created administrator {email}")
+
+    @app.cli.command("link-doctor")
+    @click.argument("email")
+    @click.argument("doctor_id", type=int)
+    def link_doctor(email: str, doctor_id: int):
+        """Attach an existing user account to a doctor profile.
+
+        A stopgap until doctors register themselves (PORTING.md row 11). That
+        flow will create the user and the profile together and is where the
+        one-account-per-profile rule belongs as a database constraint - here a
+        single admin runs one command at a time, so there is no race to lose.
+        """
+        from .models.doctor import Doctor
+        from .models.user import User
+
+        email = email.strip().lower()
+        user = User.query.filter_by(email=email).first()
+        if user is None:
+            raise click.ClickException(f"No account found for {email}")
+
+        doctor = db.session.get(Doctor, doctor_id)
+        if doctor is None:
+            raise click.ClickException(f"No doctor profile with id {doctor_id}")
+
+        if doctor.user_id and doctor.user_id != user.id:
+            raise click.ClickException(
+                f"{doctor.name} is already linked to another account (user {doctor.user_id})"
+            )
+        existing = Doctor.query.filter(Doctor.user_id == user.id, Doctor.id != doctor.id).first()
+        if existing is not None:
+            raise click.ClickException(
+                f"{email} is already linked to {existing.name} (doctor {existing.id})"
+            )
+
+        doctor.user_id = user.id
+        user.role = User.ROLE_DOCTOR
+        db.session.commit()
+        click.echo(f"Linked {email} to {doctor.name} (doctor {doctor.id})")
