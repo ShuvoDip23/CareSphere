@@ -1,4 +1,4 @@
-import { apiFetch, postJson } from "../api.js";
+import { apiFetch, getJson, postJson, escapeHtml } from "../api.js";
 import { homeFor, renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
 
@@ -116,6 +116,47 @@ function collectAvailability() {
     }));
 }
 
+const OTHER = "__other__";
+
+/** Fill the specialty picker from the directory, with an escape hatch.
+
+    A free-text field is how the prototype ended up with both "Cardiologist"
+    and "Cardiology", so filtering by one silently missed the other. The list
+    includes specialties that have no approved doctor yet, so the second
+    applicant in a new specialty picks it rather than retyping it. */
+async function loadSpecialties() {
+  const select = document.getElementById("specialty");
+  if (!select) return;
+
+  const other = document.getElementById("specialtyOther");
+  select.addEventListener("change", () => {
+    other.hidden = select.value !== OTHER;
+    if (!other.hidden) other.focus();
+  });
+
+  try {
+    const rows = await getJson("/specialties?include_empty=1");
+    select.insertAdjacentHTML(
+      "beforeend",
+      rows
+        .map((row) => `<option value="${escapeHtml(row.name)}">${escapeHtml(row.name)}</option>`)
+        .join("") + `<option value="${OTHER}">Other — type it in</option>`
+    );
+  } catch {
+    // The list is a convenience; if it cannot load, fall back to typing.
+    select.insertAdjacentHTML("beforeend", `<option value="${OTHER}">Type your specialty</option>`);
+    select.value = OTHER;
+    other.hidden = false;
+  }
+}
+
+/** The chosen specialty, whether picked from the list or typed. */
+function specialtyValue() {
+  const select = document.getElementById("specialty");
+  if (select.value === OTHER) return document.getElementById("specialtyOther").value.trim();
+  return select.value;
+}
+
 function selectedRole() {
   return document.querySelector('input[name="accountType"]:checked')?.value || "patient";
 }
@@ -149,6 +190,7 @@ function wireRegister() {
 
   wireRoleChoice();
   availabilityEditor();
+  loadSpecialties();
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -177,7 +219,7 @@ function wireRegister() {
     };
     if (isDoctor) {
       Object.assign(payload, {
-        specialty: value("specialty"),
+        specialty: specialtyValue(),
         qualification: value("qualification"),
         hospital: value("hospital"),
         location: value("location"),

@@ -1,4 +1,7 @@
 import { getJson, postJson, apiFetch, escapeHtml, formatFee, formatTime } from "../api.js";
+
+const SPECIALTY_OTHER = "__other__";
+let specialtyNames = [];
 import { icon } from "../icons.js";
 import { renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
@@ -86,17 +89,46 @@ const PROFILE_FIELDS = [
   ["fee", "Consultation fee (BDT)", "number"],
 ];
 
+function specialtyControl(current) {
+  // Same picker as sign-up: free text is how "Cardiologist" and "Cardiology"
+  // both ended up in the prototype's directory.
+  const known = specialtyNames.includes(current);
+  const options = specialtyNames
+    .map(
+      (name) =>
+        `<option value="${escapeHtml(name)}"${name === current ? " selected" : ""}>${escapeHtml(
+          name
+        )}</option>`
+    )
+    .join("");
+
+  return `
+    <select id="p_specialty">
+      ${options}
+      <option value="${SPECIALTY_OTHER}"${known ? "" : " selected"}>Other — type it in</option>
+    </select>
+    <input class="input" id="p_specialtyOther" type="text" placeholder="Type the specialty"
+           style="margin-top: var(--space-2)" value="${known ? "" : escapeHtml(current ?? "")}"
+           ${known ? "hidden" : ""} />`;
+}
+
 function profileField([key, label, type]) {
   const reviewed = REVIEWED.includes(key);
   const current = key === "specialty" ? state.profile.specialty?.name : state.profile[key];
+  const control =
+    key === "specialty"
+      ? specialtyControl(current)
+      : `<input class="input" id="p_${key}" type="${type}"${
+          type === "number" ? ' min="0" step="any"' : ""
+        } value="${escapeHtml(current ?? "")}" />`;
+
   return `
     <div class="field">
       <label for="p_${key}">
         ${label}
         ${reviewed ? '<span class="needs-review">needs review</span>' : ""}
       </label>
-      <input class="input" id="p_${key}" type="${type}"${type === "number" ? ' min="0" step="any"' : ""}
-             value="${escapeHtml(current ?? "")}" />
+      ${control}
     </div>`;
 }
 
@@ -117,6 +149,17 @@ function renderProfileEditor() {
     <button class="btn btn-primary btn-block" type="button" id="saveProfile">Save profile</button>`;
 
   $("saveProfile").addEventListener("click", (event) => saveProfile(event.currentTarget));
+
+  $("p_specialty").addEventListener("change", (event) => {
+    const other = $("p_specialtyOther");
+    other.hidden = event.target.value !== SPECIALTY_OTHER;
+    if (!other.hidden) other.focus();
+  });
+}
+
+function profileSpecialty() {
+  const select = $("p_specialty");
+  return select.value === SPECIALTY_OTHER ? $("p_specialtyOther").value.trim() : select.value;
 }
 
 async function saveProfile(button) {
@@ -124,8 +167,8 @@ async function saveProfile(button) {
   button.textContent = "Saving\u2026";
   $("profileError").hidden = true;
 
-  const payload = { bio: $("p_bio").value.trim() };
-  PROFILE_FIELDS.forEach(([key]) => {
+  const payload = { bio: $("p_bio").value.trim(), specialty: profileSpecialty() };
+  PROFILE_FIELDS.filter(([key]) => key !== "specialty").forEach(([key]) => {
     payload[key] = $(`p_${key}`).value.trim();
   });
 
@@ -361,6 +404,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (!user) {
     window.location.replace("login.html?next=doctor-dashboard.html");
     return;
+  }
+
+  try {
+    // Needed before the profile editor renders its specialty picker.
+    specialtyNames = (await getJson("/specialties?include_empty=1")).map((row) => row.name);
+  } catch {
+    specialtyNames = [];
   }
 
   try {

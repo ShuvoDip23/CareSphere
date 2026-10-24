@@ -34,7 +34,18 @@ def _int_arg(name: str, default: int, minimum: int, maximum: int) -> int:
 
 @doctors_bp.get("/specialties")
 def list_specialties():
-    """Specialties that have at least one approved doctor, with counts."""
+    """Specialties with at least one approved doctor, with counts.
+
+    `?include_empty=1` returns every specialty instead, which is what the
+    doctor sign-up picker needs: a specialty whose only doctor is still
+    pending must still be offered, or the next applicant types it again and
+    the directory ends up with both "Cardiologist" and "Cardiology" - the
+    exact duplication the Specialty table exists to prevent.
+    """
+    if request.args.get("include_empty") in ("1", "true", "yes"):
+        rows = Specialty.query.order_by(Specialty.name.asc()).all()
+        return jsonify([specialty.to_dict() for specialty in rows])
+
     rows = (
         db.session.query(Specialty, func.count(Doctor.id))
         .join(Doctor, Doctor.specialty_id == Specialty.id)
