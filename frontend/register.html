@@ -112,7 +112,16 @@
               <div class="form-row">
                 <div class="field">
                   <label for="specialty">Specialty</label>
-                  <input id="specialty" type="text" placeholder="e.g. Cardiologist" />
+                  <select id="specialty">
+                    <option value="">Choose your specialty…</option>
+                  </select>
+                  <input
+                    id="specialtyOther"
+                    type="text"
+                    placeholder="Type your specialty"
+                    style="margin-top: var(--space-2)"
+                    hidden
+                  />
                 </div>
                 <div class="field">
                   <label for="experienceYears">Years of experience</label>

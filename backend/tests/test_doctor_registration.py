@@ -288,3 +288,35 @@ def test_a_rejected_doctor_can_edit_and_resubmit(client, approved):
     response = client.put("/api/doctor/profile", json={"qualification": "MBBS, BMDC A-12345"})
     assert response.status_code == 200
     assert Doctor.query.one().qualification == "MBBS, BMDC A-12345"
+
+
+# --------------------------------------------------- the specialty picker
+
+
+def test_the_picker_offers_specialties_with_no_approved_doctor(client, app):
+    """Otherwise the second applicant retypes it and creates a duplicate."""
+    _apply(client)  # Paediatrician now exists, but only on a pending profile
+
+    assert client.get("/api/specialties").get_json() == []
+    names = [row["name"] for row in client.get("/api/specialties?include_empty=1").get_json()]
+    assert "Paediatrician" in names
+
+
+def test_two_applicants_choosing_the_same_specialty_share_one_row(client, app):
+    _apply(client)
+    _apply(client, email="second@example.com", name="Dr. Second Applicant")
+
+    assert Specialty.query.filter_by(slug="paediatrician").count() == 1
+    assert Doctor.query.count() == 2
+
+
+def test_the_default_listing_still_counts_only_approved_doctors(client, app, admin):
+    _apply(client)
+    doctor_id = Doctor.query.one().id
+
+    client.post("/api/logout")
+    client.post("/api/login", json={"email": admin.email, "password": "correct-horse"})
+    client.post(f"/api/admin/doctors/{doctor_id}/status", json={"approval_status": "approved"})
+
+    rows = client.get("/api/specialties").get_json()
+    assert [(row["name"], row["doctor_count"]) for row in rows] == [("Paediatrician", 1)]
