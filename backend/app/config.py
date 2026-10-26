@@ -27,6 +27,16 @@ class Config:
 
     SSLCOMMERZ_STORE_ID = os.environ.get("SSLCOMMERZ_STORE_ID")
     SSLCOMMERZ_STORE_PASSWORD = os.environ.get("SSLCOMMERZ_STORE_PASSWORD")
+    SSLCOMMERZ_SANDBOX = os.environ.get("SSLCOMMERZ_SANDBOX", "true").lower() not in (
+        "0",
+        "false",
+        "no",
+    )
+
+    # Where SSLCommerz sends the patient back, and where it posts its IPN.
+    # Must be reachable from the internet for IPN to arrive at all, which
+    # localhost is not - see docs/PAYMENTS.md.
+    PUBLIC_BASE_URL = os.environ.get("PUBLIC_BASE_URL", "http://127.0.0.1:5000").rstrip("/")
     OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
     OPENROUTER_MODEL = os.environ.get("OPENROUTER_MODEL", "openrouter/auto")
     OPENROUTER_URL = os.environ.get(

@@ -60,6 +60,7 @@ def _register_blueprints(app: Flask) -> None:
     from .blueprints.doctor_portal import doctor_bp
     from .blueprints.doctors import doctors_bp
     from .blueprints.donors import donors_bp
+    from .blueprints.payments import payments_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(doctors_bp)
@@ -68,8 +69,8 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(donors_bp)
     app.register_blueprint(appointments_bp)
     app.register_blueprint(doctor_bp)
+    app.register_blueprint(payments_bp)
 
-    # Week 4 - Shuvo  from .blueprints.payments import payments_bp
     # Week 6 - Shuvo  from .blueprints.emergency import emergency_bp
     # Week 6 - Ifti   from .blueprints.ambulance import ambulance_bp
     # Week 5 - Jit    from .blueprints.prescriptions import prescriptions_bp

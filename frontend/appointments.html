@@ -43,6 +43,29 @@
       </div>
     </main>
 
+    <div class="modal-backdrop" id="refundModal" hidden>
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="refundTitle">
+        <div class="modal-head">
+          <h2 id="refundTitle">Request a cancellation</h2>
+        </div>
+        <div class="modal-body">
+          <p class="text-soft" style="margin: 0 0 var(--space-4); font-size: var(--text-sm)">
+            Your appointment stays booked until an administrator reviews this. They will arrange the
+            refund with you directly.
+          </p>
+          <div class="field">
+            <label for="refundReason">Why do you need to cancel?</label>
+            <textarea class="input" id="refundReason" rows="3" maxlength="300"></textarea>
+          </div>
+          <p class="field-error" id="refundError" hidden></p>
+        </div>
+        <div class="modal-foot">
+          <button class="btn btn-secondary" type="button" id="cancelRefund">Keep it</button>
+          <button class="btn btn-danger" type="button" id="confirmRefund">Send request</button>
+        </div>
+      </div>
+    </div>
+
     <footer id="siteFooter"></footer>
     <script type="module" src="assets/js/pages/appointments.js"></script>
   </body>

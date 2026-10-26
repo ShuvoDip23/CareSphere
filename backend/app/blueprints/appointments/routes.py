@@ -19,6 +19,7 @@ from ...models.appointment import Appointment
 from ...models.doctor import Doctor
 from ...services import scheduling
 from ...utils.security import current_user, login_required
+from ..payments.routes import release_expired_holds
 
 appointments_bp = Blueprint("appointments", __name__, url_prefix="/api")
 
@@ -76,6 +77,10 @@ def doctor_slots(doctor_id: int):
     if on is None:
         return jsonify({"error": "A date in YYYY-MM-DD format is required"}), 400
 
+    # Slots held by a checkout nobody finished go back on sale here, which is
+    # the moment the answer actually matters.
+    release_expired_holds()
+
     now = scheduling.today_utc()
     reason = scheduling.bookable_reason(on, now, _horizon_days())
     if reason:
@@ -115,6 +120,8 @@ def create_appointment():
     doctor = _approved_doctor(doctor_id)
     if doctor is None:
         return jsonify({"error": "This doctor is not available for booking"}), 404
+
+    release_expired_holds()
 
     on = scheduling.parse_date(data.get("date"))
     at = scheduling.parse_time(data.get("time"))
