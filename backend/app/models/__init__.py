@@ -8,6 +8,7 @@ from .appointment import Appointment
 from .chat import ChatMessage, ChatSession
 from .doctor import Doctor, DoctorAvailability, Specialty
 from .donor import BloodDonor, DonorRequest
+from .payment import PaymentAttempt
 from .user import User
 
 __all__ = [
@@ -20,9 +21,9 @@ __all__ = [
     "ChatSession",
     "ChatMessage",
     "Appointment",
+    "PaymentAttempt",
 ]
 
-# Week 4 - Shuvo  from .payment import PaymentAttempt
 # Week 6 - Shuvo  from .emergency import EmergencyProvider, EmergencyAlert
 # Week 6 - Ifti   from .ambulance import AmbulanceProvider
 # Week 5 - Jit    from .prescription import Prescription, PrescriptionItem

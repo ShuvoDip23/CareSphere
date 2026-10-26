@@ -79,6 +79,12 @@ class Appointment(db.Model):
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(UTC), nullable=False)
     cancelled_at = db.Column(db.DateTime, nullable=True)
 
+    # A paid appointment cannot be cancelled in the app, because that would
+    # leave the patient's money taken and nothing to show for it. They ask
+    # instead, and an administrator handles the refund outside the system.
+    refund_requested_at = db.Column(db.DateTime, nullable=True)
+    refund_reason = db.Column(db.String(300), nullable=True)
+
     patient = db.relationship("User", backref=db.backref("appointments", lazy="dynamic"))
     doctor = db.relationship("Doctor", backref=db.backref("appointments", lazy="dynamic"))
 
@@ -103,6 +109,16 @@ class Appointment(db.Model):
         return self.scheduled_for < datetime.now(UTC).replace(tzinfo=None)
 
     @property
+    def can_pay(self) -> bool:
+        """Still unpaid, still upcoming, and the slot is still held."""
+        return (
+            not self.is_cancelled
+            and not self.is_paid
+            and not self.is_past
+            and self.slot_key is not None
+        )
+
+    @property
     def can_cancel(self) -> bool:
         """Only a patient's own unpaid, future, live booking.
 
@@ -125,6 +141,9 @@ class Appointment(db.Model):
             "patient_name": self.patient.name if self.patient else None,
             "is_past": self.is_past,
             "can_cancel": self.can_cancel,
+            "can_pay": self.can_pay,
+            "refund_requested": self.refund_requested_at is not None,
+            "refund_reason": self.refund_reason,
             "created_at": self.created_at.isoformat() if self.created_at else None,
         }
         if include_doctor and self.doctor is not None:

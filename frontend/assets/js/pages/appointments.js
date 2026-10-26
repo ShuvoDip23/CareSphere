@@ -1,10 +1,10 @@
-import { getJson, apiFetch, escapeHtml, formatFee, formatTime } from "../api.js";
+import { getJson, postJson, apiFetch, escapeHtml, formatFee, formatTime } from "../api.js";
 import { icon } from "../icons.js";
 import { renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
 
 const STATUS_LABELS = {
-  pending_payment: { text: "Slot held", badge: "badge-warn" },
+  pending_payment: { text: "Payment due", badge: "badge-warn" },
   confirmed: { text: "Confirmed", badge: "badge-ok" },
   cancelled: { text: "Cancelled", badge: "badge-neutral" },
   completed: { text: "Completed", badge: "badge-info" },
@@ -57,9 +57,28 @@ function card(appointment) {
         ${statusBadge(appointment)}
         <span class="appointment-fee">${formatFee(appointment.fee)}</span>
         ${
+          appointment.can_pay
+            ? `<button class="btn btn-primary btn-sm" type="button"
+                 data-pay="${appointment.id}">Pay ${formatFee(appointment.fee)}</button>`
+            : ""
+        }
+        ${
           appointment.can_cancel
             ? `<button class="btn btn-ghost btn-sm" type="button"
                  data-cancel="${appointment.id}">Cancel</button>`
+            : ""
+        }
+        ${
+          appointment.payment_status === "paid" &&
+          !appointment.is_past &&
+          !appointment.refund_requested
+            ? `<button class="btn btn-ghost btn-sm" type="button"
+                 data-refund="${appointment.id}">Request cancellation</button>`
+            : ""
+        }
+        ${
+          appointment.refund_requested
+            ? `<span class="refund-flag">Cancellation requested</span>`
             : ""
         }
       </div>
@@ -120,6 +139,72 @@ function renderSignedOut() {
     </div>`;
 }
 
+async function pay(id, button) {
+  button.disabled = true;
+  button.textContent = "Opening\u2026";
+
+  try {
+    const session = await postJson(`/payments/appointments/${encodeURIComponent(id)}/session`, {});
+    // Leaving the site is the point: SSLCommerz hosts the card form so no
+    // card details ever reach CareSphere.
+    window.location.href = session.gateway_url;
+  } catch (error) {
+    toast(error.message, "error");
+    button.disabled = false;
+    button.textContent = "Pay";
+    if (error.status === 409) refresh();
+  }
+}
+
+let refundingId = null;
+
+function openRefund(id) {
+  refundingId = id;
+  document.getElementById("refundReason").value = "";
+  document.getElementById("refundError").hidden = true;
+  document.getElementById("refundModal").hidden = false;
+  document.getElementById("refundReason").focus();
+}
+
+function closeRefund() {
+  refundingId = null;
+  document.getElementById("refundModal").hidden = true;
+}
+
+async function confirmRefund() {
+  const reason = document.getElementById("refundReason").value.trim();
+  const error = document.getElementById("refundError");
+
+  if (!reason) {
+    error.textContent = "Please give a reason so an administrator can act on it.";
+    error.hidden = false;
+    return;
+  }
+
+  try {
+    const updated = await postJson(
+      `/payments/appointments/${encodeURIComponent(refundingId)}/refund-request`,
+      { reason }
+    );
+    cache = cache.map((item) => (item.id === updated.id ? updated : item));
+    closeRefund();
+    render(cache);
+    toast("Request sent. An administrator will be in touch about the refund.", "success");
+  } catch (err) {
+    error.textContent = err.message;
+    error.hidden = false;
+  }
+}
+
+async function refresh() {
+  try {
+    cache = await getJson("/appointments");
+    render(cache);
+  } catch {
+    /* the list on screen stays; the next action will report the real error */
+  }
+}
+
 async function cancel(id, button) {
   button.disabled = true;
   button.textContent = "Cancelling…";
@@ -161,9 +246,21 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
   }
 
+  document.getElementById("cancelRefund").addEventListener("click", closeRefund);
+  document.getElementById("confirmRefund").addEventListener("click", confirmRefund);
+  document.getElementById("refundModal").addEventListener("click", (event) => {
+    if (event.target.id === "refundModal") closeRefund();
+  });
+
   // Delegated, because the list is re-rendered after every cancellation.
   document.getElementById("appointmentsRoot").addEventListener("click", (event) => {
-    const button = event.target.closest("[data-cancel]");
-    if (button) cancel(button.dataset.cancel, button);
+    const cancelBtn = event.target.closest("[data-cancel]");
+    if (cancelBtn) return cancel(cancelBtn.dataset.cancel, cancelBtn);
+
+    const payBtn = event.target.closest("[data-pay]");
+    if (payBtn) return pay(payBtn.dataset.pay, payBtn);
+
+    const refundBtn = event.target.closest("[data-refund]");
+    if (refundBtn) return openRefund(refundBtn.dataset.refund);
   });
 });
