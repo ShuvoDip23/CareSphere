@@ -1,4 +1,5 @@
 """User-scoped notification inbox."""
+
 from datetime import datetime
 
 from flask import Blueprint, jsonify
@@ -13,7 +14,12 @@ notifications_bp = Blueprint("notifications", __name__, url_prefix="/api/notific
 @notifications_bp.get("")
 @patient_required
 def list_notifications():
-    rows = Notification.query.filter_by(patient_id=current_user().id).order_by(Notification.created_at.desc()).limit(200).all()
+    rows = (
+        Notification.query.filter_by(patient_id=current_user().id)
+        .order_by(Notification.created_at.desc())
+        .limit(200)
+        .all()
+    )
     unread = Notification.query.filter_by(patient_id=current_user().id, read_at=None).count()
     return jsonify({"notifications": [n.to_dict() for n in rows], "unread_count": unread})
 
@@ -33,7 +39,8 @@ def mark_read(notification_id):
 @patient_required
 def mark_all_read():
     Notification.query.filter_by(patient_id=current_user().id, read_at=None).update(
-        {"read_at": datetime.now()}, synchronize_session=False)
+        {"read_at": datetime.now()}, synchronize_session=False
+    )
     db.session.commit()
     return jsonify({"message": "All notifications marked as read"})
 

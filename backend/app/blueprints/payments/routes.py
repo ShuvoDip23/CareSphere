@@ -126,12 +126,15 @@ def _settle(val_id: str, transaction_id: str, via: str) -> tuple[Appointment | N
     appointment.status = Appointment.STATUS_CONFIRMED
     appointment.transaction_id = attempt.transaction_id
     appointment.payment_method = verified["card_type"]
-    db.session.add(Notification(
-        patient_id=appointment.user_id, kind="appointment_confirmation",
-        title="Appointment confirmed",
-        message=f"Your appointment with {appointment.doctor.name} is confirmed for {appointment.scheduled_for:%Y-%m-%d %H:%M}.",
-        dedupe_key=f"appointment-confirmed:{appointment.id}",
-    ))
+    db.session.add(
+        Notification(
+            patient_id=appointment.user_id,
+            kind="appointment_confirmation",
+            title="Appointment confirmed",
+            message=f"Your appointment with {appointment.doctor.name} is confirmed for {appointment.scheduled_for:%Y-%m-%d %H:%M}.",
+            dedupe_key=f"appointment-confirmed:{appointment.id}",
+        )
+    )
     db.session.commit()
     return appointment, None
 

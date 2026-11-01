@@ -1,4 +1,5 @@
 """In-app notification inbox."""
+
 from datetime import UTC, datetime
 
 from ..extensions import db
@@ -16,6 +17,11 @@ class Notification(db.Model):
     created_at = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(UTC))
 
     def to_dict(self):
-        return {"id": self.id, "kind": self.kind, "title": self.title,
-                "message": self.message, "read": self.read_at is not None,
-                "created_at": self.created_at.isoformat()}
+        return {
+            "id": self.id,
+            "kind": self.kind,
+            "title": self.title,
+            "message": self.message,
+            "read": self.read_at is not None,
+            "created_at": self.created_at.isoformat(),
+        }

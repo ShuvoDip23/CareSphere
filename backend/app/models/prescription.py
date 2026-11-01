@@ -1,4 +1,5 @@
 """Patient-verified prescription records."""
+
 from datetime import UTC, datetime
 
 from ..extensions import db
@@ -15,5 +16,10 @@ class Prescription(db.Model):
     patient = db.relationship("User", backref=db.backref("prescriptions", lazy="dynamic"))
 
     def to_dict(self):
-        return {"id": self.id, "raw_text": self.raw_text, "items": self.items or [],
-                "verified": self.verified, "created_at": self.created_at.isoformat()}
+        return {
+            "id": self.id,
+            "raw_text": self.raw_text,
+            "items": self.items or [],
+            "verified": self.verified,
+            "created_at": self.created_at.isoformat(),
+        }
