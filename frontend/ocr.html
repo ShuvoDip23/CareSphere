@@ -154,6 +154,38 @@
             <button class="btn btn-ghost btn-sm" type="button" id="clearBtn" disabled>Clear</button>
           </div>
 
+          <div class="card" style="margin-top: 1.5rem">
+            <h3>Verify medicine details before saving</h3>
+            <p class="notice">
+              OCR does not reliably identify medicine fields. Enter or correct these details using
+              the original prescription.
+            </p>
+            <div class="field">
+              <label for="verifiedMedicine">Medicine name</label
+              ><input id="verifiedMedicine" maxlength="160" />
+            </div>
+            <div class="field">
+              <label for="verifiedDosage">Dosage</label
+              ><input id="verifiedDosage" placeholder="e.g. 1 tablet" />
+            </div>
+            <div class="field">
+              <label for="verifiedFrequency">Frequency</label
+              ><input id="verifiedFrequency" placeholder="e.g. Twice daily" />
+            </div>
+            <div class="field">
+              <label for="verifiedDuration">Duration</label
+              ><input id="verifiedDuration" placeholder="e.g. 5 days" />
+            </div>
+            <div class="field">
+              <label for="verifiedInstructions">Instructions</label
+              ><input id="verifiedInstructions" placeholder="e.g. After meals" />
+            </div>
+            <button class="btn btn-primary btn-block" type="button" id="savePrescription">
+              I verified these details — save prescription
+            </button>
+            <div id="savedPrescriptions" style="margin-top: 1rem"></div>
+          </div>
+
           <p class="notice" style="margin-top: var(--space-5)">
             <svg
               viewBox="0 0 24 24"

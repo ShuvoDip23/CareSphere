@@ -22,6 +22,7 @@ from flask import Blueprint, current_app, jsonify, redirect, request
 
 from ...extensions import db
 from ...models.appointment import Appointment
+from ...models.notification import Notification
 from ...models.payment import PaymentAttempt
 from ...services import payments, sslcommerz
 from ...utils.security import current_user, login_required
@@ -125,6 +126,15 @@ def _settle(val_id: str, transaction_id: str, via: str) -> tuple[Appointment | N
     appointment.status = Appointment.STATUS_CONFIRMED
     appointment.transaction_id = attempt.transaction_id
     appointment.payment_method = verified["card_type"]
+    db.session.add(
+        Notification(
+            patient_id=appointment.user_id,
+            kind="appointment_confirmation",
+            title="Appointment confirmed",
+            message=f"Your appointment with {appointment.doctor.name} is confirmed for {appointment.scheduled_for:%Y-%m-%d %H:%M}.",
+            dedupe_key=f"appointment-confirmed:{appointment.id}",
+        )
+    )
     db.session.commit()
     return appointment, None
 
