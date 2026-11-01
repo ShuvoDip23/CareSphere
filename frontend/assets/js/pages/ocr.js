@@ -1,5 +1,5 @@
-import { icon } from "../icons.js";
-import { renderChrome } from "../ui/nav.js";
+﻿import { icon } from "../icons.js";
+import { renderChrome, loadCurrentUser } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
 import { getJson, postJson, apiFetch, escapeHtml } from "../api.js";
 import {
@@ -129,7 +129,7 @@ async function runExtraction() {
   clearResult();
   setBusy(true);
   showProgress(true);
-  setProgress(0.01, "Preparing the image…");
+  setProgress(0.01, "Preparing the imageâ€¦");
 
   let lastFraction = 0.01;
   try {
@@ -249,7 +249,7 @@ async function loadSavedPrescriptions() {
       ? `<h4>Saved prescriptions</h4>${data.prescriptions
           .map(
             (p) => `<div style="padding:.75rem 0;border-bottom:1px solid var(--color-border)">
-        <strong>Prescription #${p.id}</strong> · ${new Date(p.created_at).toLocaleDateString()}
+        <strong>Prescription #${p.id}</strong> Â· ${new Date(p.created_at).toLocaleDateString()}
         <p>${(p.items || []).map((i) => escapeHtml(i.medicine_name)).join(", ")}</p>
         <button class="btn btn-ghost btn-sm" data-prescription-delete="${p.id}">Delete</button>
         <a class="btn btn-secondary btn-sm" href="medications.html">Create reminder</a></div>`
@@ -323,6 +323,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       toast(error.message, "error");
     }
   });
+  const user = await loadCurrentUser();
   if (user?.role === "patient") await loadSavedPrescriptions();
 
   refreshOutputControls();

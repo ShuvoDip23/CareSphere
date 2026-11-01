@@ -1,9 +1,9 @@
-import { getJson, apiFetch, escapeHtml } from "../api.js";
+﻿import { getJson, apiFetch, escapeHtml } from "../api.js";
 import { renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
 
 const $ = (id) => document.getElementById(id);
-let notified = new Set();
+const notified = new Set();
 
 async function load(showBrowserAlerts = false) {
   // Evaluate today's reminder slots while the app is open; the server records due/missed alerts once.
