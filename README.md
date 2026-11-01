@@ -52,6 +52,33 @@ Serve `frontend/` on port 5500 (VS Code Live Server, or
 > Use `127.0.0.1` for both, not `localhost`. The browser treats them as
 > different sites, so mixing them silently drops the session cookie.
 
+### Prescription intelligence
+
+Sign in with a patient account and open **Prescription**. OCR runs in the browser
+using Tesseract.js; the image is not uploaded. Review the extracted text and
+manually enter the medicine name, dosage and frequency (plus duration and
+instructions) against the original prescription before saving. Saved records
+are patient-scoped and can be deleted from the same page. A verified prescription
+can be used as the source for a medication plan.
+
+### Medication reminders
+
+Open **Medications** to add a plan. Enter one or more 24-hour reminder times
+separated by commas (for example `08:00, 20:00`), along with the date range.
+The dashboard shows today's schedule, active plans, dose history and adherence.
+Patients must explicitly choose **Taken** or **Skipped**. Past unconfirmed doses
+are recorded as missed after a 30-minute grace period; this is not a taken event.
+
+### Notifications
+
+Open **Notifications** and optionally enable browser alerts. In-app notifications
+are persisted by the API. While the page is open, it checks reminder slots every
+minute and can display Web Notifications when permission is granted. Browser
+notifications are foreground/page-open functionality only: this release does
+not configure Web Push, a service worker, or a background scheduler, so it does
+not promise delivery after the browser is closed. Appointment confirmation
+notifications are created after successful payment settlement.
+
 ### Checks
 
 ```bash

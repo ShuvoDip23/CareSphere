@@ -8,7 +8,10 @@ from .appointment import Appointment
 from .chat import ChatMessage, ChatSession
 from .doctor import Doctor, DoctorAvailability, Specialty
 from .donor import BloodDonor, DonorRequest
+from .notification import Notification
 from .payment import PaymentAttempt
+from .prescription import Prescription
+from .reminder import MedicationLog, MedicationReminder
 from .user import User
 
 __all__ = [
@@ -22,6 +25,10 @@ __all__ = [
     "ChatMessage",
     "Appointment",
     "PaymentAttempt",
+    "Prescription",
+    "MedicationReminder",
+    "MedicationLog",
+    "Notification",
 ]
 
 # Week 6 - Shuvo  from .emergency import EmergencyProvider, EmergencyAlert

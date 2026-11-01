@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="assets/css/tokens.css"><link rel="stylesheet" href="assets/css/base.css"><link rel="stylesheet" href="assets/css/components.css"><link rel="stylesheet" href="assets/css/pages.css">
+<title>Medication reminders — CareSphere</title></head><body><a class="skip-link" href="#main">Skip to content</a><header id="siteHeader"></header>
+<main id="main" class="container"><div class="page-head"><p class="eyebrow">Medication management</p><h1>Medication reminders</h1><p class="lede">Manage your medication plan and record each dose you take or skip.</p></div>
+<section class="card" style="margin-bottom:1.5rem"><h2>Add medication</h2><form id="medForm" class="form-grid">
+<div class="field" style="grid-column:1/-1"><label for="prescriptionSource">Start from a verified prescription (optional)</label><select id="prescriptionSource"><option value="">Manual entry</option></select></div>
+<div class="field"><label for="medicine">Medicine name</label><input id="medicine" required maxlength="160"></div>
+<div class="field"><label for="dosage">Dosage</label><input id="dosage" required placeholder="e.g. 1 tablet"></div>
+<div class="field"><label for="frequency">Frequency</label><input id="frequency" required placeholder="e.g. Twice daily"></div>
+<div class="field"><label for="times">Reminder times (comma-separated)</label><input id="times" required placeholder="08:00, 20:00"></div>
+<div class="field"><label for="startDate">Start date</label><input id="startDate" type="date" required></div>
+<div class="field"><label for="endDate">End date (optional)</label><input id="endDate" type="date"></div>
+<div class="field" style="grid-column:1/-1"><label for="instructions">Instructions (optional)</label><input id="instructions" maxlength="500" placeholder="e.g. Take after meals"></div>
+<button class="btn btn-primary" type="submit">Save medication plan</button></form></section>
+<section class="card" style="margin-bottom:1.5rem"><div class="section-head"><h2>Today's schedule</h2><button class="btn btn-secondary btn-sm" id="refresh">Refresh</button></div><div id="today" aria-live="polite">Loading schedule…</div></section>
+<section class="card" style="margin-bottom:1.5rem"><h2>Active medication plans</h2><div id="plans">Loading…</div></section>
+<section class="card"><h2>Medication history & adherence</h2><div id="stats"></div><div id="history"></div></section>
+</main><footer id="siteFooter"></footer><script type="module" src="assets/js/pages/medications.js"></script></body></html>

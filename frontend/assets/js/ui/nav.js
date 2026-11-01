@@ -15,7 +15,9 @@ const LINKS = [
     roles: ["patient", "doctor", "provider", "admin"],
   },
   { href: "blood-donors.html", label: "Blood donors" },
-  { href: "ocr.html", label: "Prescription" },
+  { href: "ocr.html", label: "Prescription", roles: ["patient"] },
+  { href: "medications.html", label: "Medications", roles: ["patient"] },
+  { href: "notifications.html", label: "Notifications", roles: ["patient"] },
   { href: "admin.html", label: "Admin", roles: ["admin"] },
 ];
 
@@ -72,6 +74,9 @@ function actionsMarkup(user) {
       <a class="btn btn-primary btn-sm" href="register.html">Create account</a>`;
   }
   return `
+    ${user.role === "patient" ? `<a class="btn btn-ghost btn-sm" href="notifications.html" aria-label="Notifications">
+      ${icon("bell")} <span id="navNotificationCount" aria-live="polite"></span>
+    </a>` : ""}
     <span class="user-chip">
       <span class="avatar">${escapeHtml(initials(user.name))}</span>
       <span>${escapeHtml(user.name)}</span>
@@ -151,6 +156,12 @@ export async function renderChrome() {
   if (actions) {
     actions.innerHTML = actionsMarkup(user);
     document.getElementById("navLogout")?.addEventListener("click", logout);
+    if (user?.role === "patient") {
+      getJson("/notifications").then((data) => {
+        const count = document.getElementById("navNotificationCount");
+        if (count) count.textContent = data.unread_count ? String(data.unread_count) : "";
+      }).catch(() => {});
+    }
   }
   return user;
 }

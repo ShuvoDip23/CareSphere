@@ -1,6 +1,7 @@
 import { icon } from "../icons.js";
 import { renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
+import { getJson, postJson, apiFetch, escapeHtml } from "../api.js";
 import {
   LANGUAGES,
   countWords,
@@ -241,6 +242,41 @@ function fillLanguages() {
   ).join("");
 }
 
+async function loadSavedPrescriptions() {
+  try {
+    const data = await getJson("/prescriptions");
+    $("savedPrescriptions").innerHTML = data.prescriptions.length
+      ? `<h4>Saved prescriptions</h4>${data.prescriptions.map((p) => `<div style="padding:.75rem 0;border-bottom:1px solid var(--color-border)">
+        <strong>Prescription #${p.id}</strong> · ${new Date(p.created_at).toLocaleDateString()}
+        <p>${(p.items || []).map((i) => escapeHtml(i.medicine_name)).join(", ")}</p>
+        <button class="btn btn-ghost btn-sm" data-prescription-delete="${p.id}">Delete</button>
+        <a class="btn btn-secondary btn-sm" href="medications.html">Create reminder</a></div>`).join("")}`
+      : "<p>No saved prescriptions yet.</p>";
+  } catch (error) {
+    $("savedPrescriptions").textContent = error.status === 401 ? "Sign in as a patient to save and view prescriptions." : error.message;
+  }
+}
+
+async function saveVerifiedPrescription() {
+  const medicine = $("verifiedMedicine").value.trim();
+  const dosage = $("verifiedDosage").value.trim();
+  const frequency = $("verifiedFrequency").value.trim();
+  if (!medicine || !dosage || !frequency) {
+    toast("Enter and verify medicine name, dosage and frequency.", "error");
+    return;
+  }
+  try {
+    await postJson("/prescriptions", {
+      raw_text: $("ocrOutput").value.trim(),
+      items: [{ medicine_name: medicine, dosage, frequency,
+        duration: $("verifiedDuration").value.trim(),
+        instructions: $("verifiedInstructions").value.trim() }]
+    });
+    toast("Verified prescription saved.", "success");
+    await loadSavedPrescriptions();
+  } catch (error) { toast(error.message, "error"); }
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   await renderChrome();
   fillIcons();
@@ -259,6 +295,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("copyBtn").addEventListener("click", copyText);
   $("downloadBtn").addEventListener("click", downloadText);
   $("clearBtn").addEventListener("click", clearResult);
+  $("savePrescription").addEventListener("click", saveVerifiedPrescription);
+  $("savedPrescriptions").addEventListener("click", async (event) => {
+    const button = event.target.closest("[data-prescription-delete]");
+    if (!button || !confirm("Delete this saved prescription?")) return;
+    try {
+      const response = await apiFetch(`/prescriptions/${button.dataset.prescriptionDelete}`, {method:"DELETE"});
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Delete failed");
+      await loadSavedPrescriptions();
+    } catch (error) { toast(error.message, "error"); }
+  });
+  if (user?.role === "patient") await loadSavedPrescriptions();
 
   refreshOutputControls();
 });
