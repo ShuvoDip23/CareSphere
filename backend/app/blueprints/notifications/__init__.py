@@ -1,1 +1,1 @@
-from .routes import notifications_bp
+from .routes import notifications_bp as notifications_bp

@@ -1,5 +1,6 @@
 """In-app notification inbox."""
 from datetime import UTC, datetime
+
 from ..extensions import db
 
 

@@ -1,9 +1,11 @@
 """User-scoped notification inbox."""
 from datetime import datetime
+
 from flask import Blueprint, jsonify
+
 from ...extensions import db
 from ...models.notification import Notification
-from ...utils.security import patient_required, current_user
+from ...utils.security import current_user, patient_required
 
 notifications_bp = Blueprint("notifications", __name__, url_prefix="/api/notifications")
 

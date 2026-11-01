@@ -1,11 +1,13 @@
-"""Patient-owned medication plans and dose tracking."""
+﻿"""Patient-owned medication plans and dose tracking."""
 from datetime import date, datetime, timedelta
+
 from flask import Blueprint, jsonify, request
+
 from ...extensions import db
 from ...models.notification import Notification
 from ...models.prescription import Prescription
 from ...models.reminder import MedicationLog, MedicationReminder
-from ...utils.security import patient_required, current_user
+from ...utils.security import current_user, patient_required
 
 reminders_bp = Blueprint("reminders", __name__, url_prefix="/api/reminders")
 
@@ -27,15 +29,25 @@ def _payload(data, existing=None):
     if not isinstance(times, list) or not times or len(times) > 12:
         raise ValueError("Provide between 1 and 12 reminder times")
     try:
-        times = sorted(set(datetime.strptime(str(t), "%H:%M").strftime("%H:%M") for t in times))
+        times = sorted({
+            datetime.strptime(str(t), "%H:%M").strftime("%H:%M")
+            for t in times
+        })
         start_date = date.fromisoformat(str(start))
         end_date = date.fromisoformat(str(end)) if end else None
     except (ValueError, TypeError):
-        raise ValueError("Dates must use YYYY-MM-DD and times must use HH:MM")
+        raise ValueError("Dates must use YYYY-MM-DD and times must use HH:MM") from None
     if end_date and end_date < start_date:
         raise ValueError("End date cannot be before start date")
-    return dict(medicine_name=name, dosage=dosage, frequency=frequency, times=times,
-                start_date=start_date, end_date=end_date, instructions=instructions[:500])
+    return {
+            "medicine_name": name,
+            "dosage": dosage,
+            "frequency": frequency,
+            "times": times,
+            "start_date": start_date,
+            "end_date": end_date,
+            "instructions": instructions[:500],
+        }
 
 
 @reminders_bp.get("")
@@ -167,3 +179,4 @@ def history():
         "total_recorded": total, "taken": taken, "skipped": sum(x.status == "skipped" for x in logs),
         "missed": sum(x.status == "missed" for x in logs),
         "adherence_percent": round(taken / total * 100) if total else 0}})
+

@@ -1,10 +1,11 @@
 """Prescription persistence. OCR is client-side; only patient-verified data is stored."""
 from flask import Blueprint, jsonify, request
+
 from ...extensions import db
 from ...models.notification import Notification
 from ...models.prescription import Prescription
 from ...models.reminder import MedicationReminder
-from ...utils.security import patient_required, current_user
+from ...utils.security import current_user, patient_required
 
 prescriptions_bp = Blueprint("prescriptions", __name__, url_prefix="/api/prescriptions")
 

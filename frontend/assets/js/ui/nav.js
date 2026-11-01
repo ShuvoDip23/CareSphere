@@ -74,9 +74,13 @@ function actionsMarkup(user) {
       <a class="btn btn-primary btn-sm" href="register.html">Create account</a>`;
   }
   return `
-    ${user.role === "patient" ? `<a class="btn btn-ghost btn-sm" href="notifications.html" aria-label="Notifications">
+    ${
+      user.role === "patient"
+        ? `<a class="btn btn-ghost btn-sm" href="notifications.html" aria-label="Notifications">
       ${icon("bell")} <span id="navNotificationCount" aria-live="polite"></span>
-    </a>` : ""}
+    </a>`
+        : ""
+    }
     <span class="user-chip">
       <span class="avatar">${escapeHtml(initials(user.name))}</span>
       <span>${escapeHtml(user.name)}</span>
@@ -157,10 +161,12 @@ export async function renderChrome() {
     actions.innerHTML = actionsMarkup(user);
     document.getElementById("navLogout")?.addEventListener("click", logout);
     if (user?.role === "patient") {
-      getJson("/notifications").then((data) => {
-        const count = document.getElementById("navNotificationCount");
-        if (count) count.textContent = data.unread_count ? String(data.unread_count) : "";
-      }).catch(() => {});
+      getJson("/notifications")
+        .then((data) => {
+          const count = document.getElementById("navNotificationCount");
+          if (count) count.textContent = data.unread_count ? String(data.unread_count) : "";
+        })
+        .catch(() => {});
     }
   }
   return user;
