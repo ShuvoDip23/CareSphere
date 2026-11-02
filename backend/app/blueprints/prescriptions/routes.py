@@ -59,14 +59,12 @@ def create_prescription():
     )
     db.session.add(row)
     db.session.flush()
-    db.session.add(
-        Notification(
-            patient_id=current_user().id,
-            kind="new_prescription",
-            title="Prescription saved",
-            message="Your verified prescription was saved successfully.",
-            dedupe_key=f"prescription-saved:{row.id}",
-        )
+    Notification.enqueue(
+        current_user().id,
+        kind="new_prescription",
+        title="Prescription saved",
+        message="Your verified prescription was saved successfully.",
+        dedupe_key=f"prescription-saved:{row.id}",
     )
     db.session.commit()
     return jsonify({"prescription": row.to_dict()}), 201

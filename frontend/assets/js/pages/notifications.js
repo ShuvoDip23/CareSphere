@@ -1,4 +1,4 @@
-﻿import { getJson, apiFetch, escapeHtml } from "../api.js";
+import { getJson, apiFetch, escapeHtml } from "../api.js";
 import { renderChrome } from "../ui/nav.js";
 import { toast } from "../ui/toast.js";
 

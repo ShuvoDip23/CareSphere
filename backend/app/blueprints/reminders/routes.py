@@ -148,24 +148,23 @@ def today_schedule():
                 )
                 db.session.add(log)
                 db.session.flush()
-                db.session.add(
-                    Notification(
-                        patient_id=current_user().id,
-                        kind="missed_medication",
-                        title="Medication may have been missed",
-                        message=f"{row.medicine_name} ({row.dosage}) was scheduled for {time}.",
-                        dedupe_key=f"missed:{row.id}:{scheduled.isoformat()}",
-                    )
+                Notification.enqueue(
+                    current_user().id,
+                    kind="missed_medication",
+                    title="Medication may have been missed",
+                    message=f"{row.medicine_name} ({row.dosage}) was scheduled for {time}.",
+                    dedupe_key=f"missed:{row.id}:{scheduled.isoformat()}",
                 )
             elif log is None and scheduled <= now:
-                db.session.add(
-                    Notification(
-                        patient_id=current_user().id,
-                        kind="medication_reminder",
-                        title="Medication due",
-                        message=f"It's time for {row.medicine_name} ({row.dosage}).",
-                        dedupe_key=f"due:{row.id}:{scheduled.isoformat()}",
-                    )
+                # No log is written for a dose that is merely due, so this
+                # branch is re-entered on every page load until the dose is
+                # taken or goes missed. `enqueue` is what makes that safe.
+                Notification.enqueue(
+                    current_user().id,
+                    kind="medication_reminder",
+                    title="Medication due",
+                    message=f"It's time for {row.medicine_name} ({row.dosage}).",
+                    dedupe_key=f"due:{row.id}:{scheduled.isoformat()}",
                 )
             entries.append(
                 {
